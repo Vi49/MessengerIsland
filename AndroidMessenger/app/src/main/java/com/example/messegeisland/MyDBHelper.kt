@@ -1,5 +1,6 @@
 package com.example.messegeisland
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
@@ -34,6 +35,7 @@ class MyDBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, nu
         db.close()
     }
 
+    @SuppressLint("Range")
     fun getAllMessages(): ArrayList<String> {
         val messages = ArrayList<String>()
         val db = readableDatabase
