@@ -3,6 +3,7 @@ package com.example.messegeisland
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,16 +16,30 @@ import com.example.messegeisland.ui.theme.MessegeIslandTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val dbHelper = MyDBHelper(this)
+        dbHelper.insertMessage("Условный текст в SQL")
+        dbHelper.insertMessage("Шалом гои.")
+        dbHelper.insertMessage("Удалить текст")
+        val messages = dbHelper.getAllMessages()
+
         setContent {
             MessegeIslandTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MessageList(messages)
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MessageList(messages: List<String>) {
+    Column {
+        for (message in messages) {
+            Text(text = message)
         }
     }
 }
@@ -44,3 +59,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
