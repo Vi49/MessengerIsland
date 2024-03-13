@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'mailgun'),
 
     /*
     |--------------------------------------------------------------------------
@@ -60,9 +60,8 @@ return [
 
         'mailgun' => [
             'transport' => 'mailgun',
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
+            'domain' => 'sandboxb6637f394e004878bc8de15e515bc24d.mailgun.org',
+            'secret' => '6fdf1ae833dba2bf6bb8e8607d8ca1d2-8c90f339-4552f943',
         ],
 
         'sendmail' => [

@@ -14,4 +14,8 @@ use App\Http\Controllers\IndexController;
 |
 */
 
-Route::get('/{page}', 'IndexController');
+Auth::routes();
+
+//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('{page}', 'IndexController')->where('page', '.*');
