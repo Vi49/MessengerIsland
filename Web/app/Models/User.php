@@ -35,4 +35,24 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+
+    public function friends()
+    {
+        return $this->hasMany(Friends::class, 'first_friend_id')
+            ->where('status', 'friend')
+            ->select('second_friend_id as friend_id');
+    }
+
+    public function inverseFriends()
+    {
+        return $this->hasMany(Friends::class, 'second_friend_id')
+            ->where('status', 'friend')
+            ->select('first_friend_id as friend_id');
+    }
+
+    public function allFriends()
+    {
+        return $this->friends()->union($this->inverseFriends());
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Api\Auth\AfterregRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Services\Utils;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -37,14 +39,9 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function register(\Illuminate\Http\Request $request)
+    public function register(RegisterRequest $request)
     {
-        //dd(111);
-
-        $request->validate([
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
-        ]);
+        $request->validated();
 
         $credentials = request(['email', 'password']);
 
@@ -73,6 +70,31 @@ class AuthController extends Controller
     public function me()
     {
         return response()->json(auth()->user());
+    }
+
+
+    public function afterreg(AfterregRequest $request)
+    {
+        $request->validated();
+
+        try {
+
+            if (request()->hasfile('avatar')) {
+                $avatarName = time() . auth()->user()->user_id . '.' . $request['avatar']->getClientOriginalExtension();
+                $request['avatar']->move(public_path('avatars'), $avatarName);
+            }
+
+            $user = auth()->user();
+            $user->avatar = $avatarName ?? NULL;
+            $user->first_name = $request['first_name'];
+            $user->last_name = $request['last_name'] ?? NULL;
+            $user->save();
+
+            return response()->json(['message'=> 'Successfully after registered']);
+
+        } catch (\Exception $ex) {
+            return response()->json(['message' => 'Error creating user']);
+        }
     }
 
     /**
@@ -112,4 +134,5 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
     }
+
 }
