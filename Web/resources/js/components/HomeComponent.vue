@@ -368,13 +368,41 @@
                 </div>
 
                 <!-- Chat messages -->
-                <div class="container-fluid" style="min-height: 90vh;">
+                <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
+                    <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
+                        <div class="row">11111</div>
+                        <div class="row">11111</div>
+                        <div class="row">11111</div>
+                        <div class="row">11111</div>
+                    </div>
 
                     <!-- Send message -->
-                    <div class="container fixed-bottom">
-                        11
+                    <div class="row justify-content-between mt-auto">
+                        <div class="align-self-end" >
+                            <div class="form-group mt-3 mb-0">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control rounded-pill w-100">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <button type="button" class="btn btn-secondary rounded-pill "><i class="fa-regular fa-face-smile"></i></button>
+                                            </div>
+                                            <div class="col-7">
+                                                <button type="button" class="btn btn-primary rounded-pill ">Send</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
 
 
 
