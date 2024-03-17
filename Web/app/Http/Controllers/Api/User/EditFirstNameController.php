@@ -15,5 +15,7 @@ class EditFirstNameController extends Controller
        $user = auth()->user();
        $user->first_name = $request['first_name'];
        $user->save();
+
+       return response()->json(['message'=>'Success']);
    }
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditLastNameRequest extends FormRequest
+class EditUserNameRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class EditLastNameRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'last_name' => 'required|string|min:1|max:25'
+            'username' => 'required|string|min:5|max:20|regex:/^[a-zA-Z0-9]+$/'
         ];
     }
 }

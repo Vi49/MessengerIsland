@@ -15,5 +15,7 @@ class EditLastNameController extends Controller
        $user = auth()->user();
        $user->last_name = $request['last_name'];
        $user->save();
+
+       return response()->json(['message'=>'Success']);
    }
 }

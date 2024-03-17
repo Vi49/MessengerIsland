@@ -22,5 +22,6 @@ class EditAvatarController extends Controller
        $user->avatar = $avatarName;
        $user->save();
 
+       return response()->json(['message'=>'Success']);
    }
 }

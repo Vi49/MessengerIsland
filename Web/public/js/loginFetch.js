@@ -1,3 +1,10 @@
+let jwtToken = localStorage.getItem('jwtToken');
+let jwtTokenExpires = localStorage.getItem('jwtTokenExpires');
+
+if(jwtToken && jwtTokenExpires){
+    location.href = "/";
+}
+
 $(document).ready(function(){
     $('button[type="submit"]').click(function (e){
         e.preventDefault();
@@ -9,10 +16,14 @@ $(document).ready(function(){
 
             localStorage.setItem('jwtToken', data.data.access_token);
 
+            let expirationDate = new Date();
+            expirationDate.setSeconds(expirationDate.getSeconds() + 43200*60-1);
+            localStorage.setItem('jwtTokenExpires', expirationDate.toISOString());
+
         }).catch(()=>{
 
         });
 
-        e.submit();
+        $('form[method="POST"]').submit();
     });
 });

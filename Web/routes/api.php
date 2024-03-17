@@ -46,6 +46,7 @@ Route::group([
     Route::post('editFirstName', 'EditFirstNameController');
     Route::post('editLastName', 'EditLastNameController');
     Route::post('editAvatar', 'EditAvatarController');
+    Route::post('editUsername', 'EditUserNameController');
 
 
     //Friends (add/block/remove)

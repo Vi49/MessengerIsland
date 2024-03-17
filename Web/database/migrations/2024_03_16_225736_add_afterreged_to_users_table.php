@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('avatar')->nullable();
+            $table->boolean('is_afterreged')->default(false)->after('bio');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('avatar');
+            $table->dropColumn('is_afterreged');
         });
     }
 };

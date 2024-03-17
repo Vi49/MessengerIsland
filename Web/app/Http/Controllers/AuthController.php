@@ -73,6 +73,7 @@ class AuthController extends Controller
     }
 
 
+
     public function afterreg(AfterregRequest $request)
     {
         $request->validated();
@@ -85,9 +86,14 @@ class AuthController extends Controller
             }
 
             $user = auth()->user();
+            if(!$user){
+                throw new \Exception( 'No user logged in');
+            }
+
             $user->avatar = $avatarName ?? NULL;
             $user->first_name = $request['first_name'];
             $user->last_name = $request['last_name'] ?? NULL;
+            $user->is_afterreged = true;
             $user->save();
 
             return response()->json(['message'=> 'Successfully after registered']);
