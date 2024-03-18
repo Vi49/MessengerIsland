@@ -10,18 +10,24 @@ class EditAvatarController extends Controller
 {
    public function __invoke(EditAvatarRequest $request)
    {
-       $request->validated();
+       if($request->validated()) {
 
-       $user = auth()->user();
+           $user = auth()->user();
 
-       //set new photo
-       $avatarName = time() . $user->user_id . '.' . $request['avatar']->getClientOriginalExtension();
-       $request['avatar']->move(public_path('avatars'), $avatarName);
+           //delete old photo
+           if (file_exists(public_path('avatars') . '/' . $user->avatar)) {
+               unlink(public_path('avatars') . '/' . $user->avatar);
+           }
 
-       //add to db
-       $user->avatar = $avatarName;
-       $user->save();
+           //set new photo
+           $avatarName = time() . $user->user_id . '.' . $request['avatar']->getClientOriginalExtension();
+           $request['avatar']->move(public_path('avatars'), $avatarName);
 
-       return response()->json(['message'=>'Success']);
+           //add to db
+           $user->avatar = $avatarName ?? NULL;
+           $user->save();
+
+           return response()->json(['message' => 'Success']);
+       }
    }
 }

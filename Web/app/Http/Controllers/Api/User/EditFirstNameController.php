@@ -10,12 +10,13 @@ class EditFirstNameController extends Controller
 {
    public function __invoke(EditFirstNameRequest $request)
    {
-       $request->validated();
+       if($request->validated()) {
 
-       $user = auth()->user();
-       $user->first_name = $request['first_name'];
-       $user->save();
+           $user = auth()->user();
+           $user->first_name = $request['first_name'];
+           $user->save();
 
-       return response()->json(['message'=>'Success']);
+           return response()->json(['message' => 'Success']);
+       }
    }
 }

@@ -10,12 +10,13 @@ class EditUserNameController extends Controller
 {
    public function __invoke(EditUserNameRequest $request)
    {
-       $request->validated();
+       if($request->validated()) {
 
-       $user = auth()->user();
-       $user->username = $request['username'];
-       $user->save();
+           $user = auth()->user();
+           $user->username = $request['username'];
+           $user->save();
 
-       return response()->json(['message'=>'Success']);
+           return response()->json(['message' => 'Success']);
+       }
    }
 }

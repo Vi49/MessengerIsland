@@ -10,12 +10,13 @@ class EditBioController extends Controller
 {
    public function __invoke(EditBioRequest $request)
    {
-       $request->validated();
+       if($request->validated()) {
 
-       $user = auth()->user();
-       $user->bio = $request['bio'];
-       $user->save();
+           $user = auth()->user();
+           $user->bio = $request['bio'];
+           $user->save();
 
-       return response()->json(['message'=>'Success']);
+           return response()->json(['message' => 'Success']);
+       }
    }
 }

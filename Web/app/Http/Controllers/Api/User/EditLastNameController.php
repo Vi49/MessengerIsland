@@ -10,12 +10,13 @@ class EditLastNameController extends Controller
 {
    public function __invoke(EditLastNameRequest $request)
    {
-       $request->validated();
+       if($request->validated()) {
 
-       $user = auth()->user();
-       $user->last_name = $request['last_name'];
-       $user->save();
+           $user = auth()->user();
+           $user->last_name = $request['last_name'];
+           $user->save();
 
-       return response()->json(['message'=>'Success']);
+           return response()->json(['message' => 'Success']);
+       }
    }
 }

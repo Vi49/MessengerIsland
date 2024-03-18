@@ -290,11 +290,11 @@ export  default {
     },
     mounted() {
         this.getUserMe();
-
-        this.avatar = 'avatars/'+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
     },
     methods: {
         editChangedValue(editType, editValue){
+
+            this.userMeData[editType] = editValue;
 
             if(editType == 'username') {
                 axios.post('/api/user/editUsername', {'username': editValue}, {
@@ -308,7 +308,6 @@ export  default {
                     .catch(error => {
                         console.error('Error editing username:', error);
                     });
-                this.userMeData.username ='';
             }
             else if(editType == 'first_name'){
                 axios.post('/api/user/editFirstName', {'first_name': editValue}, {
@@ -357,7 +356,7 @@ export  default {
                     this.userMeData[key] =  userData[key];
                 }
 
-                console.log(this.userMeData);
+                this.avatar = 'avatars/'+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
             }).catch(error => {
                 console.error('failed to getUserMe' + error);
             })
@@ -393,15 +392,9 @@ export  default {
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = () => {
-                    this.avatar = reader.result;
-                };
-                reader.readAsDataURL(this.file);
-
-
                 const formData = new FormData();
                 formData.append('avatar', this.file);
+
                 axios.post('/api/user/editAvatar', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -414,6 +407,13 @@ export  default {
                     .catch(error => {
                         console.error('Error editing avatar:', error);
                     });
+
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.avatar = reader.result;
+                };
+                reader.readAsDataURL(this.file);
+
             }
         }
     }

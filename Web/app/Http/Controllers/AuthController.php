@@ -41,24 +41,25 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $request->validated();
+        if($request->validated()) {
 
-        $credentials = request(['email', 'password']);
+            $credentials = request(['email', 'password']);
 
-        try {
-            User::create([
-                'email' => $request['email'],
-                'password' => \Illuminate\Support\Facades\Hash::make($request['password']),
-                'user_id' => Utils::generate_user_id($request['email']),
-            ]);
+            try {
+                User::create([
+                    'email' => $request['email'],
+                    'password' => \Illuminate\Support\Facades\Hash::make($request['password']),
+                    'user_id' => Utils::generate_user_id($request['email']),
+                ]);
 
-            // Generate a JWT token for the registered user
-            $token = auth()->attempt($credentials, ['exp' => Carbon::now()->addDays(30)->timestamp]);
+                // Generate a JWT token for the registered user
+                $token = auth()->attempt($credentials, ['exp' => Carbon::now()->addDays(30)->timestamp]);
 
-            return $this->respondWithToken($token);
+                return $this->respondWithToken($token);
 
-        } catch (\Exception $ex) {
-            return response()->json(['message' => 'Error creating user']);
+            } catch (\Exception $ex) {
+                return response()->json(['message' => 'Error creating user']);
+            }
         }
     }
 
@@ -76,30 +77,31 @@ class AuthController extends Controller
 
     public function afterreg(AfterregRequest $request)
     {
-        $request->validated();
+        if($request->validated()){
 
-        try {
+            try {
 
-            if (request()->hasfile('avatar')) {
-                $avatarName = time() . auth()->user()->user_id . '.' . $request['avatar']->getClientOriginalExtension();
-                $request['avatar']->move(public_path('avatars'), $avatarName);
+                if (request()->hasfile('avatar')) {
+                    $avatarName = time() . auth()->user()->user_id . '.' . $request['avatar']->getClientOriginalExtension();
+                    $request['avatar']->move(public_path('avatars'), $avatarName);
+                }
+
+                $user = auth()->user();
+                if(!$user){
+                    throw new \Exception( 'No user logged in');
+                }
+
+                $user->avatar = $avatarName ?? NULL;
+                $user->first_name = $request['first_name'];
+                $user->last_name = $request['last_name'] ?? NULL;
+                $user->is_afterreged = true;
+                $user->save();
+
+                return response()->json(['message'=> 'Successfully after registered']);
+
+            } catch (\Exception $ex) {
+                return response()->json(['message' => 'Error creating user']);
             }
-
-            $user = auth()->user();
-            if(!$user){
-                throw new \Exception( 'No user logged in');
-            }
-
-            $user->avatar = $avatarName ?? NULL;
-            $user->first_name = $request['first_name'];
-            $user->last_name = $request['last_name'] ?? NULL;
-            $user->is_afterreged = true;
-            $user->save();
-
-            return response()->json(['message'=> 'Successfully after registered']);
-
-        } catch (\Exception $ex) {
-            return response()->json(['message' => 'Error creating user']);
         }
     }
 
