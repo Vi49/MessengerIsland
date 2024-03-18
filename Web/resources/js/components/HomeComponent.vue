@@ -81,7 +81,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form method="POST">
                                 <div class="text-center">
                                     <img v-bind:src="this.avatar" alt="Profile Picture" class="settings-profile-pic">
                                 </div>
@@ -100,26 +100,21 @@
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>
-                                    <input type="text" :value="userMeData.username" class="form-control" id="username" placeholder="Enter username">
+                                    <input @change="editChangedValue('username', $event.target.value)" type="text" :value="userMeData.username" class="form-control" id="username" placeholder="Enter username">
                                 </div>
                                 <div class="mb-3">
                                     <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" :value="userMeData.first_name" class="form-control" id="firstName" placeholder="Enter first name">
+                                    <input @change="editChangedValue('first_name', $event.target.value)" type="text" :value="userMeData.first_name" class="form-control" id="firstName" placeholder="Enter first name">
                                 </div>
                                 <div class="mb-3">
                                     <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" :value="userMeData.last_name" class="form-control" id="lastName" placeholder="Enter last name">
+                                    <input @change="editChangedValue('last_name', $event.target.value)" type="text" :value="userMeData.last_name" class="form-control" id="lastName" placeholder="Enter last name">
                                 </div>
                                 <div class="mb-3">
                                     <label for="bio" class="form-label">Bio</label>
-                                    <input type="text" :value="userMeData.bio" class="form-control" id="bio" placeholder="Any details about you">
+                                    <input @change="editChangedValue('bio', $event.target.value)" type="text" :value="userMeData.bio" class="form-control" id="bio" placeholder="Any details about you">
                                 </div>
                             </form>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save changes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Close</button>
                         </div>
 
                     </div>
@@ -299,6 +294,61 @@ export  default {
         this.avatar = 'avatars/'+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
     },
     methods: {
+        editChangedValue(editType, editValue){
+
+            if(editType == 'username') {
+                axios.post('/api/user/editUsername', {'username': editValue}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                })
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        console.error('Error editing username:', error);
+                    });
+                this.userMeData.username ='';
+            }
+            else if(editType == 'first_name'){
+                axios.post('/api/user/editFirstName', {'first_name': editValue}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                })
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        console.error('Error editing first_name:', error);
+                    });
+            }else if(editType == 'last_name'){
+                axios.post('/api/user/editLastName', {'last_name': editValue}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                })
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        console.error('Error editing last_name:', error);
+                    });
+            }
+            else if(editType == 'bio'){
+                axios.post('/api/user/editBio', {'bio': editValue}, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                })
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        console.error('Error editing bio:', error);
+                    });
+            }
+        },
         getUserMe(){
             axios.post('/api/auth/me', {}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
                 const userData = data.data;
@@ -348,10 +398,24 @@ export  default {
                     this.avatar = reader.result;
                 };
                 reader.readAsDataURL(this.file);
+
+
+                const formData = new FormData();
+                formData.append('avatar', this.file);
+                axios.post('/api/user/editAvatar', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                })
+                    .then(response => {
+
+                    })
+                    .catch(error => {
+                        console.error('Error editing avatar:', error);
+                    });
             }
-
-
-        },
+        }
     }
 }
 </script>
@@ -479,8 +543,8 @@ div .chatting-area{
 }
 
 .settings-profile-pic {
-    width: 30%; /* Adjust the width as needed */
-    height: 30%; /* Adjust the height as needed */
+    width: 120px; /* Adjust the width as needed */
+    height: 120px; /* Adjust the height as needed */
     border-radius: 50%;
 }
 
