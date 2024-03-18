@@ -14,19 +14,19 @@
                 <div class="align-items-center flex-shrink-0 link-dark text-decoration-none border-bottom">
                     <div class="row mt-3 mb-1 justify-content-center">
                         <div class="col-12 text-center">
-                            <img src="avatars/1710366074d432c4c73603418.jpg" class="menu-profile-pic">
+                            <img :src="avatar" class="menu-profile-pic">
                         </div>
                     </div>
 
                     <div class="row mt-3 justify-content-center">
                         <div class="col-12 fs-4 fw-bold text-center">
-                            John Doe
+                            {{ userMeData.first_name }} {{ userMeData.last_name }}
                         </div>
                     </div>
 
                     <div class="row mb-1 justify-content-center">
                         <div class="col-12 fs-6 fw-lighter text-center">
-                            @johndoe1488
+                            @{{ userMeData.username }}
                         </div>
                     </div>
                 </div>
@@ -100,19 +100,19 @@
 
                                 <div class="mb-3">
                                     <label for="username" class="form-label">Username</label>
-                                    <input type="text" class="form-control" id="username" placeholder="Enter username">
+                                    <input type="text" :value="userMeData.username" class="form-control" id="username" placeholder="Enter username">
                                 </div>
                                 <div class="mb-3">
                                     <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+                                    <input type="text" :value="userMeData.first_name" class="form-control" id="firstName" placeholder="Enter first name">
                                 </div>
                                 <div class="mb-3">
                                     <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+                                    <input type="text" :value="userMeData.last_name" class="form-control" id="lastName" placeholder="Enter last name">
                                 </div>
                                 <div class="mb-3">
                                     <label for="bio" class="form-label">Bio</label>
-                                    <input type="text" class="form-control" id="bio" placeholder="Any details about you">
+                                    <input type="text" :value="userMeData.bio" class="form-control" id="bio" placeholder="Any details about you">
                                 </div>
                             </form>
                         </div>
@@ -284,18 +284,34 @@
 export  default {
     data() {
         return {
+            userMeData: {},
             menubarShow: false,
             jwtToken: localStorage.getItem('jwtToken'),
             jwtTokenExpires: localStorage.getItem('jwtTokenExpires'),
             file: null,
-            avatar: 'avatars/default.jpg',
+            avatar: '',
             photoError: ''
         };
     },
-    computed:{
+    mounted() {
+        this.getUserMe();
 
+        this.avatar = 'avatars/'+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
     },
     methods: {
+        getUserMe(){
+            axios.post('/api/auth/me', {}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
+                const userData = data.data;
+
+                for (let key in userData) {
+                    this.userMeData[key] =  userData[key];
+                }
+
+                console.log(this.userMeData);
+            }).catch(error => {
+                console.error('failed to getUserMe' + error);
+            })
+        },
         logOut(){
 
             //
