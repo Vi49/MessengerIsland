@@ -8,6 +8,13 @@
 <script>
 export default {
     name: "Index",
+    data(){
+        return {
+            isUserOnline: false,
+            jwtToken: '',
+            jwtTokenExpires: '',
+        };
+    },
     beforeCreate() {
         let regEmail = localStorage.getItem('regEmail');
         let regPassword = localStorage.getItem('regPassword');
@@ -57,6 +64,48 @@ export default {
             //alert('error me');
             location.href = "/login";
         });
+    },
+    mounted() {
+        jwtToken = localStorage.getItem('jwtToken');
+        jwtTokenExpires = localStorage.getItem('jwtTokenExpires');
+
+        if(jwtToken && jwtTokenExpires) {
+            this.isUserOnline = true;
+
+            window.addEventListener('mousemove', this.setUserOnline);
+            window.addEventListener('keydown', this.setUserOnline);
+
+            // Set user offline when user is inactive for a certain period (e.g., 5 minutes)
+            this.setUserOfflineAfterInactivity();
+        }
+    },
+    methods: {
+        setUserOnline() {
+            this.isUserOnline = true;
+
+            const timestamp = Math.floor(Date.now() / 1000);
+            axios.patch('/api/updateLastSeen', {}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then().catch();
+
+        },
+        setUserOffline() {
+            this.isUserOnline = false;
+        },
+        setUserOfflineAfterInactivity() {
+            let timer;
+            const inactivityDuration = 1 * 60 * 1000; // 1 minute
+
+            const resetTimer = () => {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    this.setUserOffline();
+                }, inactivityDuration);
+            };
+
+            resetTimer();
+
+            window.addEventListener('mousemove', resetTimer);
+            window.addEventListener('keydown', resetTimer);
+        }
     }
 }
 

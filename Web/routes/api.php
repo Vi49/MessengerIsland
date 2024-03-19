@@ -49,6 +49,9 @@ Route::group([
     Route::post('editUsername', 'EditUserNameController');
 
 
+    //Update last seen
+    Route::patch('updateLastSeen', 'UpdateLastSeenController');
+
     //Friends (add/block/remove)
     //Model Friends status friend/blocked/requested. If remove -> delete row
 

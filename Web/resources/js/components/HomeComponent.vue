@@ -127,9 +127,10 @@
                 <div class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
                     <i @click="this.menubarShow = true" class="fa-solid fa-bars fs-3" style="cursor: pointer"></i>
 
-                    <input class="form-control rounded-pill" type="search" placeholder="Search" aria-label="Search" style="margin-left: 12px">
+                    <input @input="fetchResults" v-model="searchTerm" class="form-control rounded-pill" type="search" placeholder="Search" aria-label="Search" style="margin-left: 12px">
+
                 </div>
-                <div class="list-group list-group-flush border-bottom scrollarea">
+                <div class="list-group list-group-flush border-bottom scrollarea" v-if="!isSearch">
 
                     <a href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
                         <div class="row">
@@ -178,9 +179,13 @@
 
 
                 </div>
+                <div v-else>
+                    <search-results></search-results>
+                </div>
 
             </div>
-            <!-- Text on the right side of the sidebar -->
+
+            <!-- Chat -->
             <div class="col-md-10" style="padding-left: 0; padding-right: 0">
                 <div class="container-fluid last-time-bottom-line" style="padding-bottom: 5px">
                     <div class="row">
@@ -276,6 +281,8 @@
 
 <script>
 
+import SearchComponent from "./SearchComponent.vue";
+
 export  default {
     data() {
         return {
@@ -285,7 +292,10 @@ export  default {
             jwtTokenExpires: localStorage.getItem('jwtTokenExpires'),
             file: null,
             avatar: '',
-            photoError: ''
+            photoError: '',
+            searchTerm: '',
+            searchResults: [],
+            isSearch: true, //todo: false after making v-if
         };
     },
     mounted() {
@@ -373,6 +383,29 @@ export  default {
                 location.href = '/login';
             }).catch(() => {})
         },
+        fetchResults(event) {
+            if(event.target.value.length == 0){
+                this.isSearch = false;
+            }
+
+            if(event.target.value.length > 3) {
+
+                // Send Axios request
+                axios.post('/api/search', {'word': this.searchTerm}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(response => {
+                    // Update searchResults with the response data
+                    this.searchResults = response.data.data;
+                    console.log(this.searchResults);
+                })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+
+                this.isSearch = true;
+
+            }
+
+
+        },
         handleFileChange(event) {
             // Replace previously selected file with the new one
             this.file = event.target.files[0];
@@ -416,6 +449,9 @@ export  default {
 
             }
         }
+    },
+    components: {
+        'search-results': SearchComponent
     }
 }
 </script>
