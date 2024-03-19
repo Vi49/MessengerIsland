@@ -54,3 +54,14 @@ Route::group([
 
 });
 
+
+//Search
+Route::group([
+    'middleware' => 'jwt.auth',
+    'namespace'=> 'Api\Search',
+    'prefix' => 'search'
+], function ($router) {
+
+    Route::post('/','SearchController');
+});
+
