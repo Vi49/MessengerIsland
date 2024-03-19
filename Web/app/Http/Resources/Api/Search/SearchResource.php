@@ -22,7 +22,9 @@ class SearchResource extends JsonResource
             'last_name' => $this->last_name,
             'email' => $this->email,
             'role' => $this->role,
-            'avatar' => $this->avatar
+            'avatar' => $this->avatar,
+            'last_seen' => $this->last_seen,
+            'last_seen_human_ago' => $this->last_seen_human_ago,
         ];
     }
 }

@@ -180,7 +180,7 @@
 
                 </div>
                 <div v-else>
-                    <search-results></search-results>
+                    <search-results :searchResults="this.searchResults"></search-results>
                 </div>
 
             </div>
@@ -295,7 +295,7 @@ export  default {
             photoError: '',
             searchTerm: '',
             searchResults: [],
-            isSearch: true, //todo: false after making v-if
+            isSearch: false, //todo: false after making v-if
         };
     },
     mounted() {
@@ -394,7 +394,7 @@ export  default {
                 axios.post('/api/search', {'word': this.searchTerm}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(response => {
                     // Update searchResults with the response data
                     this.searchResults = response.data.data;
-                    console.log(this.searchResults);
+
                 })
                     .catch(error => {
                         console.error('Error fetching search results:', error);
