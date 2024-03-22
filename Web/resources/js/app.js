@@ -10,6 +10,7 @@ import TestComponent from "./components/TestComponent.vue";
 import HomeComponent from "./components/HomeComponent.vue";
 import AfterRegComponent from "./components/AfterRegComponent.vue";
 import SearchComponent from "./components/AfterRegComponent.vue";
+import ChatComponent from "./components/ChatComponent.vue"
 
 
 const routes = [
@@ -33,5 +34,6 @@ app.component('TestComponent', TestComponent);
 app.component('HomeComponent', HomeComponent);
 app.component('AfterRegComponent', AfterRegComponent);
 app.component('SearchComponent', SearchComponent);
+app.component('ChatComponent', ChatComponent);
 
 app.mount('#app');
