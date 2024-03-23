@@ -186,7 +186,7 @@
             </div>
 
             <!-- Chat -->
-            <chat-component></chat-component>
+            <chat :chat_id="chat_id" :chat_type="chat_type" :jwtToken="jwtToken"></chat>
         </div>
     </div>
 
@@ -197,6 +197,7 @@
 <script>
 
 import SearchComponent from "./SearchComponent.vue";
+import ChatComponent from "./ChatComponent.vue";
 
 export  default {
     data() {
@@ -210,7 +211,9 @@ export  default {
             photoError: '',
             searchTerm: '',
             searchResults: [],
-            isSearch: false, //todo: false after making v-if
+            isSearch: false,
+            chat_id: this.$route.params.chat_id ?? 0,
+            chat_type: this.$route.params.chat_type ?? '',
         };
     },
     mounted() {
@@ -281,7 +284,7 @@ export  default {
                     this.userMeData[key] =  userData[key];
                 }
 
-                this.avatar = 'avatars/'+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
+                this.avatar = `/avatars/`+ ((this.userMeData.avatar == null) ? 'default.jpg' : this.userMeData.avatar);
             }).catch(error => {
                 console.error('failed to getUserMe' + error);
             })
@@ -366,7 +369,8 @@ export  default {
         }
     },
     components: {
-        'search-results': SearchComponent
+        'search-results': SearchComponent,
+        'chat': ChatComponent
     }
 }
 </script>
@@ -492,6 +496,7 @@ div .chatting-area{
     height: 90%; /* Adjust the height as needed */
     border-radius: 50%;
 }
+
 
 .settings-profile-pic {
     width: 120px; /* Adjust the width as needed */

@@ -1,77 +1,81 @@
 <template>
     <div class="col-md-10" style="padding-left: 0; padding-right: 0">
-        <div class="container-fluid last-time-bottom-line" style="padding-bottom: 5px">
-            <div class="row">
-                <div class="col-md-11">
-                    <div class="row mt-3">
-                        <span class="fs-5 fw-semibold">Roman Rotschild</span>
-                    </div>
-                    <div class="row">
-                        <span class="text-last-time">last seen 2 hours ago</span>
-                    </div>
-                </div>
+        <div v-if="chat_id && chat_type != ''">
 
-                <div class="col-md-1 text-md-end mt-4" style="padding-right: 20px">
-                    <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
+            <!-- Chat name -->
+            <div class="container-fluid last-time-bottom-line" style="padding-bottom: 5px">
+                <div class="row">
+                    <div class="col-md-11" data-bs-toggle="modal" data-bs-target="#userInfoModal" style="cursor: pointer">
+                        <div class="row mt-3">
+                            <span class="fs-5 fw-semibold">{{ this.chat_information.first_name }} {{ this.chat_information.last_name }}</span>
+                        </div>
+                        <div class="row">
+                            <span class="text-last-time">last seen {{ this.chat_information.last_seen_human_ago }}</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1 text-md-end mt-4" style="padding-right: 20px">
+                        <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Chat messages -->
-        <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
-            <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
+            <!-- Chat messages -->
+            <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
+                <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
 
-                <div class="row message-body">
-                    <div class="col-sm-12 message-main-receiver">
-                        <div class="receiver">
-                            <div class="message-text">
-                                Hello kompaniya ZAO (((BURTAU))) budiet unechtozhena cherez 24 chasa.
-                            </div>
-                            <div class="text-end">
+                    <div class="row message-body">
+                        <div class="col-sm-12 message-main-receiver">
+                            <div class="receiver">
+                                <div class="message-text">
+                                    Hello kompaniya ZAO (((BURTAU))) budiet unechtozhena cherez 24 chasa.
+                                </div>
+                                <div class="text-end">
                                     <span class="message-time ">
                                         Sun
                                     </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
 
-                <div class="row message-body">
-                    <div class="col-sm-12 message-main-sender">
-                        <div class="sender">
-                            <div class="message-text">
-                                Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ
-                            </div>
-                            <div class="text-end">
+                    <div class="row message-body">
+                        <div class="col-sm-12 message-main-sender">
+                            <div class="sender">
+                                <div class="message-text">
+                                    Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ
+                                </div>
+                                <div class="text-end">
                                     <span class="message-time">
                                             Sun
                                         </span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
-            </div>
-
-            <!-- Send message -->
-            <div class="row justify-content-between mt-auto">
-                <div class="align-self-end" >
-                    <div class="form-group mt-3 mb-0">
-                        <div class="row">
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
-                            </div>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control rounded-pill w-100">
-                            </div>
-                            <div class="col-md-1">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <button type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
-                                    </div>
-                                    <div class="col-7">
-                                        <button type="button" class="btn btn-primary rounded-pill ">Send</button>
+                <!-- Send message -->
+                <div class="row justify-content-between mt-auto">
+                    <div class="align-self-end" >
+                        <div class="form-group mt-3 mb-0">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
+                                </div>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control rounded-pill w-100">
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
+                                        </div>
+                                        <div class="col-7">
+                                            <button type="button" class="btn btn-primary rounded-pill ">Send</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -80,17 +84,130 @@
                 </div>
             </div>
         </div>
+        <div v-else>
+            <div class="container-fluid d-flex justify-content-center mt-3" style="display: flex; flex-direction: column; height: 90vh;">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-4 d-flex justify-content-center">
+                        <button class="btn btn-outline-primary rounded-pill select-a-chat-button">Select a chat to start messanging</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal show user info -->
+    <div class="modal fade" id="userInfoModal" tabindex="-1" aria-labelledby="userInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userInfoModalLabel"> {{ info_header }} Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        <div class="row border-bottom" style="padding-bottom: 12px">
+                            <div class="col-md-3 mt-2 d-flex justify-content-center">
+                                <img v-bind:src="`/avatars/`+ ((this.chat_information.avatar == null) ? 'default.jpg' : this.chat_information.avatar)" alt="Profile Picture" class="settings-profile-pic">
+                            </div>
+                            <div class="col-md-9 d-flex justify-content-left">
+                                <div class="row">
+                                    <span class="mt-2 fs-3 fw-bold"> {{ this.chat_information.first_name }} {{ this.chat_information.last_name }} </span>
+                                    <span class="fs-6">last seen {{ this.chat_information.last_seen_human_ago }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="chat_information.bio || chat_information.username" class="row border-bottom" style="padding-bottom: 12px">
+                            <div class="row mt-3" v-if="chat_information.bio">
+                                <div class="col-md-2 d-flex justify-content-center mt-1">
+                                    <i class="fa-solid fa-circle-info fs-3"></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <span class="fs-5"> {{ this.chat_information.bio }} </span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="fw-light"> Bio </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3" v-if="chat_information.username">
+                                <div class="col-md-2 d-flex justify-content-center ">
+
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <span class="fs-5"> @{{ this.chat_information.username }} </span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="fw-light"> Username </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- TODO: Status fetch -->
+                            <div class="row mt-3">
+                                <div class="col-md-2 d-flex justify-content-center mt-1">
+                                    <i class="fa-solid fa-users fs-3"></i>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="row">
+                                        <span class="fs-5"> Friend </span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="fw-light"> Status </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
     </div>
 
 </template>
 
 <script>
 export default {
+    data(){
+        return {
+            chat_information: {},
+            info_header: '',
+        };
+    },
+    props: [ 'chat_id', 'chat_type', 'jwtToken' ],
+    mounted() {
+        if(this.chat_type == 'user') {
+            this.info_header = "User";
 
+            axios.post('/api/user/getInfo', {"user_id": this.chat_id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
+
+                this.chat_information = data.data.data;
+            }).catch();
+
+            //console.log(this.chat_information);
+        }
+    },
+    methods: {
+
+    }
 }
 </script>
 
 <style scoped>
+.select-a-chat-button {
+    pointer-events: none;
+}
+.select-a-chat-button:hover {
+    background-color: inherit; /* Keep background color unchanged on hover */
+    border-color: inherit; /* Keep border color unchanged on hover */
+    color: inherit; /* Keep text color unchanged on hover */
+}
 
 .text-last-time{
     font-size: 13px;
@@ -200,6 +317,13 @@ div .chatting-area{
     text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
     display: inline-block;
     word-wrap: break-word;
+}
+
+
+.settings-profile-pic {
+    width: 70px; /* Adjust the width as needed */
+    height: 70px; /* Adjust the height as needed */
+    border-radius: 50%;
 }
 
 </style>

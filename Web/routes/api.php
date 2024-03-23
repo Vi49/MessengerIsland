@@ -48,9 +48,11 @@ Route::group([
     Route::post('editAvatar', 'EditAvatarController');
     Route::post('editUsername', 'EditUserNameController');
 
-
-    //Update last seen
+    //Update current user last seen
     Route::patch('updateLastSeen', 'UpdateLastSeenController');
+
+    //Get limited info about (other or same) user
+    Route::post('getInfo', 'GetUserInfo');
 
     //Friends (add/block/remove)
     //Model Friends status friend/blocked/requested. If remove -> delete row

@@ -3,10 +3,10 @@
         <div class="list-group list-group-flush border-bottom scrollarea">
 
             <div v-for="searchResult in searchResults" :key="searchResult.first_name">
-                <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
+                <a :href="'/chat/user/' + searchResult.user_id" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
                     <div class="row">
                         <div class="col-md-3 ">
-                            <img :src="'avatars/'+ ((this.searchResult && this.searchResult.avatar)  ? this.searchResult.avatar : 'default.jpg')" class="profile-pic">
+                            <img :src="'/avatars/'+ ((this.searchResult && this.searchResult.avatar)  ? this.searchResult.avatar : 'default.jpg')" class="profile-pic">
                         </div>
 
                         <div class="col-md-9" style="padding-left: 0px; margin-left: 0">

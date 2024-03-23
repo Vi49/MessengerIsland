@@ -20,7 +20,6 @@ class SearchResource extends JsonResource
             'username' => $this->username,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
-            'email' => $this->email,
             'role' => $this->role,
             'avatar' => $this->avatar,
             'last_seen' => $this->last_seen,

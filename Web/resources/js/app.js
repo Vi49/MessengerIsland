@@ -18,6 +18,7 @@ const routes = [
     { path: '/', component: HomeComponent},
     { path: '/home', component: HomeComponent},
     { path: '/afterreg', component: AfterRegComponent},
+    { path: '/chat/:chat_type/:chat_id', component: HomeComponent}, //opens a chat, chat_type can be user/group/bot, chat_id is an id of user/group/bot
 ]
 
 const router = VueRouter.createRouter({
