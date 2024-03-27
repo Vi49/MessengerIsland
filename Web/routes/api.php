@@ -54,11 +54,19 @@ Route::group([
     //Get limited info about (other or same) user
     Route::post('getInfo', 'GetUserInfo');
 
-    //Friends (add/block/remove)
-    //Model Friends status friend/blocked/requested. If remove -> delete row
-
 });
 
+//Friends (add/block/remove)
+//Model Friends status friend/blocked/requested. If remove -> delete row
+Route::group([
+        'middleware' => 'jwt.auth',
+        'prefix' => 'friend',
+        'namespace'=> 'Api\Friend'
+    ], function ($router) {
+
+    Route::post('getStatus', 'GetStatusController');
+
+    });
 
 //Search
 Route::group([

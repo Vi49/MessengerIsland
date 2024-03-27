@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Friends extends Model
+class Relationships extends Model
 {
     use HasFactory;
 
     protected $guarded = false;
-
 
 
 }

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+use App\Http\Services\Utils;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
@@ -23,11 +25,21 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $email = fake()->unique()->safeEmail();
+
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'user_id' => Utils::generate_user_id($email),
+            'username' => fake()->firstName().fake()->colorName().fake()->randomDigit().fake()->randomDigit(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'email' => $email,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'role' => 'user',
+            'bio' => fake()->paragraph(1),
+            'is_afterreged' => true,
+            'last_seen' => now(),
+            'avatar' => NULL,
             'remember_token' => Str::random(10),
         ];
     }
