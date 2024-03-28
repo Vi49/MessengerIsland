@@ -65,6 +65,8 @@ Route::group([
     ], function ($router) {
 
     Route::post('getStatus', 'GetStatusController');
+    Route::post('block', 'BlockUnblockController@block');
+    Route::post('unblock', 'BlockUnblockController@unblock');
 
     });
 

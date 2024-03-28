@@ -60,8 +60,15 @@
                 <!-- Send message -->
                 <div class="row justify-content-between mt-auto">
                     <div class="align-self-end" >
-                        <div class="form-group mt-3 mb-0">
+                        <div class="form-group mt-3 mb-0" v-if="chat_information['is_blocking']">
                             <div class="row">
+                                <div class="col-md-12">
+                                    <button @click="unblockCurrentChat()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-unlock"></i> Unblock</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mt-3 mb-0" v-else>
+                            <div class="row" v-if="chat_information['friend_status']=='friends'">
                                 <div class="col-md-1">
                                     <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
                                 </div>
@@ -77,6 +84,21 @@
                                             <button type="button" class="btn btn-primary rounded-pill ">Send</button>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row" v-else-if="chat_information['friend_status']=='unknown'">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-user-plus"></i> Send friend request</button>
+                                </div>
+                            </div>
+                            <div class="row" v-else-if="chat_information['friend_status']=='requested first'">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> You were friend requested, please accept it in "Friends" tab </button>
+                                </div>
+                            </div>
+                            <div class="row" v-else-if="chat_information['friend_status']=='requested second'">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> Friend request was sent </button>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +135,7 @@
                             <div class="col-md-9 d-flex justify-content-left">
                                 <div class="row">
                                     <span class="mt-2 fs-3 fw-bold"> {{ this.chat_information.first_name }} {{ this.chat_information.last_name }} </span>
-                                    <span class="fs-6">last seen {{ this.chat_information.last_seen_human_ago }}</span>
+                                    <span class="fs-6">last seen {{ (chat_information['is_blocking']) ? 'a long time ago' :this.chat_information.last_seen_human_ago }}</span>
                                 </div>
                             </div>
                         </div>
@@ -155,7 +177,7 @@
                                 </div>
                                 <div class="col-md-10">
                                     <div class="row">
-                                        <span class="fs-5"> Friend </span>
+                                        <span class="fs-5"> {{ getFriendStatus() }} </span>
                                     </div>
                                     <div class="row">
                                         <span class="fw-light"> Status </span>
@@ -188,13 +210,47 @@ export default {
             axios.post('/api/user/getInfo', {"user_id": this.chat_id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
 
                 this.chat_information = data.data.data;
+
+                axios.post('/api/friend/getStatus', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
+                    this.chat_information['friend_status'] = data.data.status;
+                    this.chat_information['is_blocking'] = data.data.is_blocking;
+                }).catch();
+
             }).catch();
+
+
+
 
             //console.log(this.chat_information);
         }
     },
     methods: {
+        getFriendStatus(){
+            let status = '';
 
+            if(this.chat_information['friend_status'] == "friend"){
+                status = "Friend" + (this.chat_information['is_blocking']) ? ' (Blocked)' : '';
+            }
+            else{
+                status = "Unknown" + (this.chat_information['is_blocking']) ? ' (Blocked)' : '';
+            }
+
+            return status;
+        },
+        unblockCurrentChat(){
+            if(this.chat_type == 'user') {
+                axios.post('/api/friend/unblock', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                    this.chat_information['is_blocking'] = false;
+                }).catch();
+            }
+        },
+        blockCurrentChat(){
+            if(this.chat_type == 'user') {
+                axios.post('/api/friend/block', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                    this.chat_information['is_blocking'] = false;
+                }).catch();
+            }
+        }
     }
 }
 </script>
