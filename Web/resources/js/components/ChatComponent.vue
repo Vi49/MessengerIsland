@@ -15,7 +15,36 @@
                     </div>
 
                     <div class="col-md-1 text-md-end mt-4" style="padding-right: 20px">
-                        <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
+                        <!-- Dropdown for ellipsis -->
+                        <div class="dropdown">
+                            <button class="btn" type="button" id="ellipsisMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="ellipsisMenu">
+                                <li>
+                                    <div v-if="chat_information['friend_status'] == 'unknown'">
+                                        <a class="dropdown-item" href="#" @click.prevent="sendFriendRequest"><i class="fa-solid fa-user-plus"></i> Send friend request</a>
+                                    </div>
+                                    <div v-else-if="chat_information['friend_status'] == 'requested first'">
+                                        <a class="dropdown-item" href="#" @click.prevent="acceptFriendRequest"><i class="fa-solid fa-user-plus"></i> Accept friend request</a>
+                                    </div>
+                                    <div v-else-if="chat_information['friend_status'] == 'requested second'">
+                                        <a class="dropdown-item" href="#" @click.prevent="removeFriendRequest"><i class="fa-solid fa-ban"></i> Remove my friend request</a>
+                                    </div>
+                                    <div v-else-if="chat_information['friend_status'] == 'friends'">
+                                        <a class="dropdown-item" href="#" @click.prevent="removeFromFriends"><i class="fa-solid fa-bam"></i> Remove from friends</a>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div v-if="chat_information['is_blocking']">
+                                        <a class="dropdown-item" href="#" @click="unblockCurrentChat"><i class="fa-regular fa-circle-xmark"></i> Unblock</a>
+                                    </div>
+                                    <div v-else>
+                                        <a class="dropdown-item" href="#" @click="blockCurrentChat"><i class="fa-solid fa-ban"></i> Block</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,7 +117,7 @@
                             </div>
                             <div class="row" v-else-if="chat_information['friend_status']=='unknown'">
                                 <div class="col-md-12">
-                                    <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-user-plus"></i> Send friend request</button>
+                                    <button type="button" @click="sendFriendRequest()" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-user-plus"></i> Send friend request</button>
                                 </div>
                             </div>
                             <div class="row" v-else-if="chat_information['friend_status']=='requested first'">
@@ -99,6 +128,9 @@
                             <div class="row" v-else-if="chat_information['friend_status']=='requested second'">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> Friend request was sent </button>
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <button @click="removeFriendRequest()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-ban"></i> Remove your friend request </button>
                                 </div>
                             </div>
                         </div>
@@ -170,14 +202,13 @@
                         </div>
 
                         <div class="row">
-                            <!-- TODO: Status fetch -->
                             <div class="row mt-3">
                                 <div class="col-md-2 d-flex justify-content-center mt-1">
                                     <i class="fa-solid fa-users fs-3"></i>
                                 </div>
                                 <div class="col-md-10">
                                     <div class="row">
-                                        <span class="fs-5"> {{ getFriendStatus() }} </span>
+                                        <span class="fs-5"> {{ getFriendStatus }} </span>
                                     </div>
                                     <div class="row">
                                         <span class="fw-light"> Status </span>
@@ -195,11 +226,13 @@
 </template>
 
 <script>
+//TODO:
+//1. Test all & fix if needed
 export default {
     data(){
         return {
             chat_information: {},
-            info_header: '',
+            info_header: ''
         };
     },
     props: [ 'chat_id', 'chat_type', 'jwtToken' ],
@@ -217,26 +250,24 @@ export default {
                 }).catch();
 
             }).catch();
+        }
+    },
+    computed:{
+        getFriendStatus(){
+            if(this.chat_type == 'user') {
+                let status = '';
 
+                if (this.chat_information['friend_status'] == "friends") {
+                    status = "Friend" + ((this.chat_information['is_blocking']) ? ' (Blocked)' : '');
+                } else {
+                    status = "Unknown" + ((this.chat_information['is_blocking']) ? ' (Blocked)' : '');
+                }
 
-
-
-            //console.log(this.chat_information);
+                return status;
+            }
         }
     },
     methods: {
-        getFriendStatus(){
-            let status = '';
-
-            if(this.chat_information['friend_status'] == "friend"){
-                status = "Friend" + (this.chat_information['is_blocking']) ? ' (Blocked)' : '';
-            }
-            else{
-                status = "Unknown" + (this.chat_information['is_blocking']) ? ' (Blocked)' : '';
-            }
-
-            return status;
-        },
         unblockCurrentChat(){
             if(this.chat_type == 'user') {
                 axios.post('/api/friend/unblock', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
@@ -247,9 +278,47 @@ export default {
         blockCurrentChat(){
             if(this.chat_type == 'user') {
                 axios.post('/api/friend/block', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
-                    this.chat_information['is_blocking'] = false;
+                    this.chat_information['is_blocking'] = true;
                 }).catch();
             }
+        },
+        sendFriendRequest(){
+            axios.post('/api/friend/sendRequest', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                this.chat_information['friend_status'] = 'requested second';
+            }).catch();
+        },
+        removeFriendRequest(){
+            axios.delete('/api/friend/removeRequest', {
+                headers: {
+                    Authorization: `Bearer ${this.jwtToken}`
+                },
+                data: {
+                    second_user_id: this.chat_information.id
+                }
+            }).then(() => {
+                this.chat_information['friend_status'] = 'unknown';
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        },
+        removeFromFriends(){
+            axios.delete('/api/friend/removeFriend', {
+                headers: {
+                    Authorization: `Bearer ${this.jwtToken}`
+                },
+                data: {
+                    second_user_id: this.chat_information.id
+                }
+            }).then(() => {
+                this.chat_information['friend_status'] = 'unknown';
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        },
+        acceptFriendRequest(){
+            axios.post('/api/friend/acceptFriendRequest', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                this.chat_information['friend_status'] = 'friends';
+            }).catch();
         }
     }
 }

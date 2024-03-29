@@ -14,9 +14,6 @@ class Status
             if (Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'friend')->first() && Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'friend')->first()) {
                 $status = 'friends';
 
-            } else if (Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'blocked')->first()) {
-                $status = 'blocked';
-
             } else if (Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'requested')->first()) {
                 $status = 'requested first';
 
@@ -32,16 +29,7 @@ class Status
             if (Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'friend')->first() && Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'friend')->first()) {
                 $status = 'friends';
 
-            }else if(Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'blocked')->first() && Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'blocked')->first()){
-                $status = 'blocked both';
-
-            }else if(Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'blocked')->first()){
-                $status = 'blocked first';
-
-            }else if(Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'blocked')->first()){
-                $status = 'blocked second';
-
-            } else if (Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'requested')->first()) {
+            }else if (Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'requested')->first()) {
                 $status = 'requested first';
 
             } else if (Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'requested')->first()) {

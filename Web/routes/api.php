@@ -59,16 +59,25 @@ Route::group([
 //Friends (add/block/remove)
 //Model Friends status friend/blocked/requested. If remove -> delete row
 Route::group([
-        'middleware' => 'jwt.auth',
-        'prefix' => 'friend',
-        'namespace'=> 'Api\Friend'
-    ], function ($router) {
+    'middleware' => 'jwt.auth',
+    'prefix' => 'friend',
+    'namespace'=> 'Api\Friend'
+], function ($router) {
 
     Route::post('getStatus', 'GetStatusController');
+
     Route::post('block', 'BlockUnblockController@block');
     Route::post('unblock', 'BlockUnblockController@unblock');
 
-    });
+    Route::post('sendRequest', 'FriendListController@send_request'); //Send (add) request to some user
+    Route::post('declineRequest', 'FriendListController@decline_request'); //Decline request to me (first user)
+    Route::delete('removeRequest', 'FriendListController@remove_request'); // Remove request I sent to user (second user)
+    Route::delete('removeFriend', 'FriendListController@remove_friend'); //Remove user from friends list (works for both)
+    Route::post('acceptFriendRequest', 'FriendListController@accept_friend_request'); //Remove user from friends list (works for both)
+
+
+
+});
 
 //Search
 Route::group([
