@@ -75,7 +75,7 @@ Route::group([
     Route::delete('removeFriend', 'FriendListController@remove_friend'); //Remove user from friends list (works for both)
     Route::post('acceptFriendRequest', 'FriendListController@accept_friend_request'); //Remove user from friends list (works for both)
 
-
+    Route::get('getFriendList', 'GetFriendListController');
 
 });
 

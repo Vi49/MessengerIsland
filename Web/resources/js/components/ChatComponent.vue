@@ -226,8 +226,6 @@
 </template>
 
 <script>
-//TODO:
-//1. Test all & fix if needed
 export default {
     data(){
         return {

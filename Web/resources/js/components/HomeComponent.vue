@@ -132,51 +132,23 @@
                 </div>
                 <div class="list-group list-group-flush border-bottom scrollarea" v-if="!isSearch">
 
-                    <a href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
-                        <div class="row">
-                            <div class="col-md-3 mt-2">
-                                <img src="avatars/1710366074d432c4c73603418.jpg" class="profile-pic">
-                            </div>
 
-                            <div class="col-md-9" style="padding-left: 0px; margin-left: 0">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <strong class="mb-1">Roman Rotschild</strong>
-                                    <small>Sun</small>
+                    <div v-for="friend in friend_list" :key="friend.last_seen">
+                        <a :href="'/chat/user/' + friend.user_id" class="list-group-item list-group-item-action py-3 lh-tight friend-item" aria-current="true">
+                            <div class="row">
+                                <div class="col-md-3 mt-2">
+                                    <img :src="'/avatars/'+ ((this.friend && this.friend.avatar)  ? this.friend.avatar : 'default.jpg')" class="profile-pic">
                                 </div>
-                                <div class="col-10 mb-1 small">Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ </div>
-                            </div></div>
-                    </a>
 
-                    <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
-                        <div class="row">
-                            <div class="col-md-3 mt-2">
-                                <img src="avatars/1710366074d432c4c73603418.jpg" class="profile-pic">
-                            </div>
-
-                            <div class="col-md-9" style="padding-left: 0px; margin-left: 0">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <strong class="mb-1">Theodor Eicke</strong>
-                                    <small>Sun</small>
-                                </div>
-                                <div class="col-10 mb-1 small">OilTrade (((Burtau))) works well </div>
-                            </div></div>
-                    </a>
-
-                    <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
-                        <div class="row">
-                            <div class="col-md-3 mt-2">
-                                <img src="avatars/1710366074d432c4c73603418.jpg" class="profile-pic">
-                            </div>
-
-                            <div class="col-md-9" style="padding-left: 0px; margin-left: 0">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <strong class="mb-1">Разведка ЛОНДОН</strong>
-                                    <small>Sun</small>
-                                </div>
-                                <div class="col-10 mb-1 small">За вами ведётся слежк.а закройте своё лицо рукой </div>
-                            </div></div>
-                    </a>
-
+                                <div class="col-md-9" style="padding-left: 0px; margin-left: 0">
+                                    <div class="d-flex w-100 align-items-center justify-content-between">
+                                        <strong class="mb-1">{{ friend.first_name }} {{ friend.last_name }}</strong>
+                                        <small>Sun</small>
+                                    </div>
+                                    <div class="col-10 mb-1 small">Here must be last message </div>
+                                </div></div>
+                        </a>
+                    </div>
 
                 </div>
                 <div v-else>
@@ -214,10 +186,12 @@ export  default {
             isSearch: false,
             chat_id: this.$route.params.chat_id ?? 0,
             chat_type: this.$route.params.chat_type ?? '',
+            friend_list: [],
         };
     },
     mounted() {
         this.getUserMe();
+        this.getFriendList();
     },
     methods: {
         editChangedValue(editType, editValue){
@@ -366,6 +340,12 @@ export  default {
                 reader.readAsDataURL(this.file);
 
             }
+        },
+        getFriendList(){
+            axios.get('/api/friend/getFriendList', {headers: {'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`}})
+                .then(response => {
+                    this.friend_list = response.data.data;
+                }).catch();
         }
     },
     components: {
@@ -376,6 +356,13 @@ export  default {
 </script>
 
 <style scoped>
+.friend-item {
+    height: 90px;
+    display: block; /* Ensure the link takes up the full width */
+    padding: 10px 20px 0 10px;
+}
+
+
 .scrollarea {
     max-height: 92vh; /* Adjust the height as per your requirement */
     overflow-y: auto; /* Enable vertical scrolling */
