@@ -1,149 +1,148 @@
 <template>
-    <div class="col-md-10" style="padding-left: 0; padding-right: 0">
-        <div v-if="chat_id && chat_type != ''">
 
-            <!-- Chat name -->
-            <div class="container-fluid last-time-bottom-line" style="padding-bottom: 5px">
-                <div class="row">
-                    <div class="col-md-11" data-bs-toggle="modal" data-bs-target="#userInfoModal" style="cursor: pointer">
-                        <div class="row mt-3">
-                            <span class="fs-5 fw-semibold">{{ this.chat_information.first_name }} {{ this.chat_information.last_name }}</span>
-                        </div>
-                        <div class="row">
-                            <span class="text-last-time">last seen {{ this.chat_information.last_seen_human_ago }}</span>
-                        </div>
+    <div v-if="chat_id && chat_type != ''">
+
+        <!-- Chat name -->
+        <div class="container-fluid last-time-bottom-line" style="padding-bottom: 5px">
+            <div class="row">
+                <div class="col-md-11" data-bs-toggle="modal" data-bs-target="#userInfoModal" style="cursor: pointer">
+                    <div class="row mt-3">
+                        <span class="fs-5 fw-semibold">{{ this.chat_information.first_name }} {{ this.chat_information.last_name }}</span>
                     </div>
+                    <div class="row">
+                        <span class="text-last-time">last seen {{ this.chat_information.last_seen_human_ago }}</span>
+                    </div>
+                </div>
 
-                    <div class="col-md-1 text-md-end mt-4" style="padding-right: 20px">
-                        <!-- Dropdown for ellipsis -->
-                        <div class="dropdown">
-                            <button class="btn" type="button" id="ellipsisMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="ellipsisMenu">
-                                <li>
-                                    <div v-if="chat_information['friend_status'] == 'unknown'">
-                                        <a class="dropdown-item" href="#" @click.prevent="sendFriendRequest"><i class="fa-solid fa-user-plus"></i> Send friend request</a>
-                                    </div>
-                                    <div v-else-if="chat_information['friend_status'] == 'requested first'">
-                                        <a class="dropdown-item" href="#" @click.prevent="acceptFriendRequest"><i class="fa-solid fa-user-plus"></i> Accept friend request</a>
-                                    </div>
-                                    <div v-else-if="chat_information['friend_status'] == 'requested second'">
-                                        <a class="dropdown-item" href="#" @click.prevent="removeFriendRequest"><i class="fa-solid fa-ban"></i> Remove my friend request</a>
-                                    </div>
-                                    <div v-else-if="chat_information['friend_status'] == 'friends'">
-                                        <a class="dropdown-item" href="#" @click.prevent="removeFromFriends"><i class="fa-solid fa-bam"></i> Remove from friends</a>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div v-if="chat_information['is_blocking']">
-                                        <a class="dropdown-item" href="#" @click="unblockCurrentChat"><i class="fa-regular fa-circle-xmark"></i> Unblock</a>
-                                    </div>
-                                    <div v-else>
-                                        <a class="dropdown-item" href="#" @click="blockCurrentChat"><i class="fa-solid fa-ban"></i> Block</a>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                <div class="col-md-1 text-md-end mt-4" style="padding-right: 20px">
+                    <!-- Dropdown for ellipsis -->
+                    <div class="dropdown">
+                        <button class="btn" type="button" id="ellipsisMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis-vertical fs-2"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="ellipsisMenu">
+                            <li>
+                                <div v-if="chat_information['friend_status'] == 'unknown'">
+                                    <a class="dropdown-item" href="#" @click.prevent="sendFriendRequest"><i class="fa-solid fa-user-plus"></i> Send friend request</a>
+                                </div>
+                                <div v-else-if="chat_information['friend_status'] == 'requested first'">
+                                    <a class="dropdown-item" href="#" @click.prevent="acceptFriendRequest"><i class="fa-solid fa-user-plus"></i> Accept friend request</a>
+                                </div>
+                                <div v-else-if="chat_information['friend_status'] == 'requested second'">
+                                    <a class="dropdown-item" href="#" @click.prevent="removeFriendRequest"><i class="fa-solid fa-ban"></i> Remove my friend request</a>
+                                </div>
+                                <div v-else-if="chat_information['friend_status'] == 'friends'">
+                                    <a class="dropdown-item" href="#" @click.prevent="removeFromFriends"><i class="fa-solid fa-bam"></i> Remove from friends</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div v-if="chat_information['is_blocking']">
+                                    <a class="dropdown-item" href="#" @click="unblockCurrentChat"><i class="fa-regular fa-circle-xmark"></i> Unblock</a>
+                                </div>
+                                <div v-else>
+                                    <a class="dropdown-item" href="#" @click="blockCurrentChat"><i class="fa-solid fa-ban"></i> Block</a>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Chat messages -->
-            <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
-                <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
+        <!-- Chat messages -->
+        <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
+            <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
 
-                    <div class="row message-body">
-                        <div class="col-sm-12 message-main-receiver">
-                            <div class="receiver">
-                                <div class="message-text">
-                                    Hello kompaniya ZAO (((BURTAU))) budiet unechtozhena cherez 24 chasa.
-                                </div>
-                                <div class="text-end">
+                <div class="row message-body">
+                    <div class="col-sm-12 message-main-receiver">
+                        <div class="receiver">
+                            <div class="message-text">
+                                Hello kompaniya ZAO (((BURTAU))) budiet unechtozhena cherez 24 chasa.
+                            </div>
+                            <div class="text-end">
                                     <span class="message-time ">
                                         Sun
                                     </span>
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
 
-                    <div class="row message-body">
-                        <div class="col-sm-12 message-main-sender">
-                            <div class="sender">
-                                <div class="message-text">
-                                    Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ
-                                </div>
-                                <div class="text-end">
+                <div class="row message-body">
+                    <div class="col-sm-12 message-main-sender">
+                        <div class="sender">
+                            <div class="message-text">
+                                Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ
+                            </div>
+                            <div class="text-end">
                                     <span class="message-time">
                                             Sun
                                         </span>
-                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <!-- Send message -->
-                <div class="row justify-content-between mt-auto">
-                    <div class="align-self-end" >
-                        <div class="form-group mt-3 mb-0" v-if="chat_information['is_blocking']">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button @click="unblockCurrentChat()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-unlock"></i> Unblock</button>
-                                </div>
+            </div>
+
+            <!-- Send message -->
+            <div class="row justify-content-between mt-auto">
+                <div class="align-self-end" >
+                    <div class="form-group mt-3 mb-0" v-if="chat_information['is_blocking']">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button @click="unblockCurrentChat()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-unlock"></i> Unblock</button>
                             </div>
                         </div>
-                        <div class="form-group mt-3 mb-0" v-else>
-                            <div class="row" v-if="chat_information['friend_status']=='friends'">
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
-                                </div>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control rounded-pill w-100">
-                                </div>
-                                <div class="col-md-1">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <button type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
-                                        </div>
-                                        <div class="col-7">
-                                            <button type="button" class="btn btn-primary rounded-pill ">Send</button>
-                                        </div>
+                    </div>
+                    <div class="form-group mt-3 mb-0" v-else>
+                        <div class="row" v-if="chat_information['friend_status']=='friends'">
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control rounded-pill w-100">
+                            </div>
+                            <div class="col-md-1">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <button type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
+                                    </div>
+                                    <div class="col-7">
+                                        <button type="button" class="btn btn-primary rounded-pill ">Send</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" v-else-if="chat_information['friend_status']=='unknown'">
-                                <div class="col-md-12">
-                                    <button type="button" @click="sendFriendRequest()" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-user-plus"></i> Send friend request</button>
-                                </div>
+                        </div>
+                        <div class="row" v-else-if="chat_information['friend_status']=='unknown'">
+                            <div class="col-md-12">
+                                <button type="button" @click="sendFriendRequest()" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-user-plus"></i> Send friend request</button>
                             </div>
-                            <div class="row" v-else-if="chat_information['friend_status']=='requested first'">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> You were friend requested, please accept it in "Friends" tab </button>
-                                </div>
+                        </div>
+                        <div class="row" v-else-if="chat_information['friend_status']=='requested first'">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> You were friend requested, please accept it in "Friends" tab </button>
                             </div>
-                            <div class="row" v-else-if="chat_information['friend_status']=='requested second'">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> Friend request was sent </button>
-                                </div>
-                                <div class="col-md-12 mt-2">
-                                    <button @click="removeFriendRequest()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-ban"></i> Remove your friend request </button>
-                                </div>
+                        </div>
+                        <div class="row" v-else-if="chat_information['friend_status']=='requested second'">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary rounded-pill w-100"><i class="fa-solid fa-envelope"></i> Friend request was sent </button>
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <button @click="removeFriendRequest()" type="button" class="btn btn-danger rounded-pill w-100"><i class="fa-solid fa-ban"></i> Remove your friend request </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-else>
-            <div class="container-fluid d-flex justify-content-center mt-3" style="display: flex; flex-direction: column; height: 90vh;">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-4 d-flex justify-content-center">
-                        <button class="btn btn-outline-primary rounded-pill select-a-chat-button">Select a chat to start messanging</button>
-                    </div>
+    </div>
+    <div v-else>
+        <div class="container-fluid d-flex justify-content-center mt-3" style="display: flex; flex-direction: column; height: 90vh;">
+            <div class="row d-flex justify-content-center">
+                <div class="col-4 d-flex justify-content-center">
+                    <button class="btn btn-outline-primary rounded-pill select-a-chat-button">Select a chat to start messanging</button>
                 </div>
             </div>
         </div>

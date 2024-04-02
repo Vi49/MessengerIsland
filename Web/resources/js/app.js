@@ -10,12 +10,14 @@ import TestComponent from "./components/TestComponent.vue";
 import HomeComponent from "./components/HomeComponent.vue";
 import AfterRegComponent from "./components/AfterRegComponent.vue";
 import SearchComponent from "./components/AfterRegComponent.vue";
-import ChatComponent from "./components/ChatComponent.vue"
-
+import ChatComponent from "./components/ChatComponent.vue";
+import FriendsComponent from "./components/FriendsComponent.vue";
 
 const routes = [
     { path: '/test', component: TestComponent},
     { path: '/', component: HomeComponent},
+    { path: '/friends', component: HomeComponent},
+    { path: '/friends/:friendlist_type', component: HomeComponent},
     { path: '/home', component: HomeComponent},
     { path: '/afterreg', component: AfterRegComponent},
     { path: '/chat/:chat_type/:chat_id', component: HomeComponent}, //opens a chat, chat_type can be user/group/bot, chat_id is an id of user/group/bot
@@ -36,5 +38,6 @@ app.component('HomeComponent', HomeComponent);
 app.component('AfterRegComponent', AfterRegComponent);
 app.component('SearchComponent', SearchComponent);
 app.component('ChatComponent', ChatComponent);
+app.component('FriendsComponent', FriendsComponent);
 
 app.mount('#app');

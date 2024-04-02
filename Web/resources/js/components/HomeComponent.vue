@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div v-show="menubarShow" class="col-md-2" style="padding-right: 0; padding-left: 0; border-right: 1px solid #666261">
+            <div v-show="menubarShow" class="col-md-2" style="padding-right: 0; padding-left: 0; border-right: 1px solid #666261; height: 100vh;">
                 <div class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
                     <div class="row">
                         <div @click="this.menubarShow = false" class="col-12 arrow-pointer">
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="list-group list-group-flush border-bottom scrollarea">
-                    <a href="#" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
+                    <a href="/friends" class="list-group-item list-group-item-action py-3 lh-tight" aria-current="true">
                         <div class="row">
                             <div class="col-md-2 mt-2">
                                 <div class="text-center">
@@ -122,7 +122,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-md-2" v-show="!menubarShow" style="display: none; padding-right: 0; padding-left: 0; border-right: 1px solid #666261">
+            <div class="col-md-2" v-show="!menubarShow" style="display: none; padding-right: 0; padding-left: 0; border-right: 1px solid #666261; height: 100vh;">
 
                 <div class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
                     <i @click="this.menubarShow = true" class="fa-solid fa-bars fs-3" style="cursor: pointer"></i>
@@ -145,6 +145,7 @@
                                         <strong class="mb-1">{{ friend.first_name }} {{ friend.last_name }}</strong>
                                         <small>Sun</small>
                                     </div>
+                                    <!-- TODO: add last message here -->
                                     <div class="col-10 mb-1 small">Here must be last message </div>
                                 </div></div>
                         </a>
@@ -157,8 +158,15 @@
 
             </div>
 
+            <!-- Friends -->
+            <div class="col-md-10" style="padding-left: 0; padding-right: 0" v-if="isFriendsRoute">
+                <friends :friendlist_type="friendlist_type"></friends>
+            </div>
+
             <!-- Chat -->
-            <chat :chat_id="chat_id" :chat_type="chat_type" :jwtToken="jwtToken"></chat>
+            <div class="col-md-10" style="padding-left: 0; padding-right: 0" v-else>
+                <chat :chat_id="chat_id" :chat_type="chat_type" :jwtToken="jwtToken"></chat>
+            </div>
         </div>
     </div>
 
@@ -170,6 +178,7 @@
 
 import SearchComponent from "./SearchComponent.vue";
 import ChatComponent from "./ChatComponent.vue";
+import FriendsComponent from "./FriendsComponent.vue";
 
 export  default {
     data() {
@@ -187,11 +196,17 @@ export  default {
             chat_id: this.$route.params.chat_id ?? 0,
             chat_type: this.$route.params.chat_type ?? '',
             friend_list: [],
+            friendlist_type: this.$route.params.friendlist_type ?? '',
         };
     },
     mounted() {
         this.getUserMe();
         this.getFriendList();
+    },
+    computed: {
+        isFriendsRoute(){
+            return this.$route.path === '/friends' || this.$route.path === '/friends/'+this.friendlist_type;
+        }
     },
     methods: {
         editChangedValue(editType, editValue){
@@ -350,7 +365,8 @@ export  default {
     },
     components: {
         'search-results': SearchComponent,
-        'chat': ChatComponent
+        'chat': ChatComponent,
+        'friends': FriendsComponent
     }
 }
 </script>
