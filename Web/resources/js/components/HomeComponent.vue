@@ -202,6 +202,7 @@ export  default {
     mounted() {
         this.getUserMe();
         this.getFriendList();
+        this.setWindowTitle();
     },
     computed: {
         isFriendsRoute(){
@@ -209,6 +210,27 @@ export  default {
         }
     },
     methods: {
+        setWindowTitle(){
+            let title = 'Messenger Island';
+
+            if(this.$route.path === '/friends'){
+                title += " - Friends"
+            }
+            else if(this.$route.path === '/friends/all'){
+                title += " - Friends (All)"
+            }
+            else if(this.$route.path === '/friends/pending'){
+                title += " - Friends (Pending)"
+            }
+            else if(this.$route.path === '/friends/blocked'){
+                title += " - Friends (Blocked)"
+            }
+            else if(this.$route.path.includes('chat/user/')){
+                title += " - Chat"
+            }
+
+            document.title = title;
+        },
         editChangedValue(editType, editValue){
 
             this.userMeData[editType] = editValue;
