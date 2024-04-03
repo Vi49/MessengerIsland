@@ -2,7 +2,7 @@
 namespace App\Http\Services\Friends;
 
 
-use App\Models\BlockRelationsips;
+use App\Models\BlockRelationships;
 use App\Models\Relationships;
 
 class Status
@@ -44,7 +44,7 @@ class Status
     }
 
     public static function isBlocking($first_user_id, $second_user_id) : bool{
-        if (BlockRelationsips::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->first()) {
+        if (BlockRelationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->first()) {
             return true;
         }
 

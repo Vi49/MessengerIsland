@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('block_relationsips', function (Blueprint $table) {
+        Schema::create('block_relationships', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger( 'first_user_id');

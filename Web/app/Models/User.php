@@ -40,6 +40,17 @@ class User extends Authenticatable implements JWTSubject
     public function friends()
     {
         return $this->hasMany(Relationships::class, 'first_user_id', 'id')
-            ->where('status', 'friend');
+            ->where('status', 'friend')->orderByDesc('relationships.id');
+    }
+
+    public function pending_friends()
+    {
+        return $this->hasMany(Relationships::class, 'second_user_id', 'id')
+            ->where('status', 'requested')->orderByDesc('relationships.id');
+    }
+
+    public function blocked_friends()
+    {
+        return $this->hasMany(BlockRelationships::class, 'first_user_id', 'id')->orderByDesc('block_relationships.id');
     }
 }

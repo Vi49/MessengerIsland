@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Friend;
 
 use App\Http\Controllers\Controller;
-use App\Models\BlockRelationsips;
+use App\Models\BlockRelationships;
 use App\Models\Relationships;
 use App\Http\Requests\Api\Friend\BlockUnblockRequest;
 
@@ -16,7 +16,7 @@ class BlockUnblockController extends Controller
             $first_user_id = auth()->user()->id;
             $second_user_id = $request['second_user_id'];
 
-            BlockRelationsips::firstOrCreate([
+            BlockRelationships::firstOrCreate([
                 'first_user_id' => $first_user_id,
                 'second_user_id' => $second_user_id
             ]);
@@ -32,7 +32,7 @@ class BlockUnblockController extends Controller
             $first_user_id = auth()->user()->id;
             $second_user_id = $request['second_user_id'];
 
-            $relationship = BlockRelationsips::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->first();
+            $relationship = BlockRelationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->first();
             if($relationship) {
                 $relationship->delete();
 
