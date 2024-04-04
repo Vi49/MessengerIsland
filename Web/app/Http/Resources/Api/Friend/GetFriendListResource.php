@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\Friend;
 
+use App\Http\Services\Friends\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class GetFriendListResource extends JsonResource
             'avatar' => $friendUser->avatar,
             'last_seen' => $friendUser->last_seen,
             'last_seen_human_ago' => Carbon::parse($friendUser->last_seen)->diffForHumans(),
+            'is_blocked' => Status::isBlocking(auth()->user()->id, $id),
         ];
     }
 }

@@ -26,7 +26,6 @@ class GetFriendListController extends Controller
         $first_user_id = auth()->user()->id;
 
         $friends = User::find($first_user_id)->pending_friends;
-        //dd($friends);
 
         return GetPendingFriendListResource::collection($friends);
     }

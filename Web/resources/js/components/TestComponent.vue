@@ -6,7 +6,10 @@
 
 <script>
 export default {
-    name: "TestComponent"
+    name: "TestComponent",
+    mounted() {
+        console.log(this.$router);
+    }
 }
 </script>
 

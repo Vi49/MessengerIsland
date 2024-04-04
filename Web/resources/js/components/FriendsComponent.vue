@@ -31,12 +31,25 @@
                     <div class="col-12"><span class="text-black">{{ (friend.username) ? '@'+ friend.username : '' }}</span></div>
                 </div>
                 <div class="p-2 align-self-end align-self-center ms-auto m-4">
-                    <div class="d-flex justify-content-center">
-                        <div class="p-1"><button type="button" title="Chat with user" class="btn btn-outline-primary rounded-pill"><i class="fa-solid fa-paper-plane"></i></button></div>
-                        <div class="p-1"><button type="button" title="Remove user from friends" class="btn btn-outline-secondary rounded-pill"><i class="fa-solid fa-user-slash"></i></button></div>
-                        <div class="p-1"><button type="button" title="Block user" class="btn btn-outline-danger rounded-pill"><i class="fa-solid fa-ban"></i></button></div>
-
+                    <!-- Friend Actions -->
+                    <div class="d-flex justify-content-center" v-if="!friendlist_type || friendlist_type === 'all'">
+                        <div class="p-1"><button @click="redirectToChat(friend.user_id)" type="button" title="Chat with user" class="btn btn-outline-primary rounded-pill"><i class="fa-solid fa-paper-plane"></i></button></div>
+                        <div class="p-1"><button @click="removeFromFriends(friend.id, friend)" type="button" title="Remove user from friends" class="btn btn-outline-secondary rounded-pill"><i class="fa-solid fa-user-slash"></i></button></div>
+                        <div class="p-1" v-if="friend.is_blocked == false">
+                            <button @click="blockFriend(friend)" type="button" title="Block user" class="btn btn-outline-danger rounded-pill"><i class="fa-solid fa-ban"></i></button>
+                        </div>
+                        <div class="p-1" v-if="friend.is_blocked == true">
+                            <button @click="unblockFriend(friend)" type="button" title="Unblock user" class="btn btn-outline-success rounded-pill"><i class="fa-solid fa-unlock"></i></button>
+                        </div>
                     </div>
+                    <div class="d-flex justify-content-center" v-else-if="friendlist_type === 'pending'">
+                        <div class="p-1"><button type="button" title="Accept friend request" class="btn btn-outline-success rounded-pill"><i class="fa-solid fa-check"></i></button></div>
+                        <div class="p-1"><button type="button" title="Reject friend request" class="btn btn-outline-danger rounded-pill"><i class="fa-solid fa-xmark"></i></button></div>
+                    </div>
+                    <div class="d-flex justify-content-center" v-else-if="friendlist_type === 'blocked'">
+                        <div class="p-1"><button type="button" title="Accept friend request" class="btn btn-outline-success rounded-pill">Unblock</button></div>
+                    </div>
+
                 </div>
             </div>
 
@@ -52,7 +65,7 @@ export default {
             friend_list: [],
         };
     },
-    props: ['friendlist_type'],
+    props: ['jwtToken', 'friendlist_type', 'sidebar_friendlist'],
     mounted() {
         this.getFriendList();
     },
@@ -74,7 +87,36 @@ export default {
                     this.friend_list = response.data.data;
                 }).catch();
 
-        }
+        },
+        redirectToChat(user_id){
+            location.href = '/chat/user/'+user_id;
+        },
+        removeFromFriends(second_user_id, friend){
+            axios.delete('/api/friend/removeFriend', {
+                headers: {
+                    Authorization: `Bearer ${this.jwtToken}`
+                },
+                data: {
+                    second_user_id: second_user_id
+                }
+            }).then(() => {
+                this.friend_list = this.friend_list.filter(f => f.id !== friend.id);
+
+                this.$parent.friend_list = this.$parent.friend_list.filter(f => f.id !== friend.id);
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        },
+        blockFriend(friend){
+            axios.post('/api/friend/block', {"second_user_id": friend.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                friend.is_blocked = true;
+            }).catch();
+        },
+        unblockFriend(friend){
+            axios.post('/api/friend/unblock', {"second_user_id": friend.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                friend.is_blocked = false;
+            }).catch();
+        },
     }
 
 }

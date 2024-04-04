@@ -160,7 +160,7 @@
 
             <!-- Friends -->
             <div class="col-md-10" style="padding-left: 0; padding-right: 0" v-if="isFriendsRoute">
-                <friends :friendlist_type="friendlist_type"></friends>
+                <friends :friendlist_type="friendlist_type" :jwtToken="jwtToken" :sidebar_friendlist="friend_list"></friends>
             </div>
 
             <!-- Chat -->

@@ -20,11 +20,11 @@ const routes = [
     { path: '/friends/:friendlist_type', component: HomeComponent},
     { path: '/home', component: HomeComponent},
     { path: '/afterreg', component: AfterRegComponent},
-    { path: '/chat/:chat_type/:chat_id', component: HomeComponent}, //opens a chat, chat_type can be user/group/bot, chat_id is an id of user/group/bot
+    { path: '/chat/:chat_type/:chat_id', component: HomeComponent, name: 'chat'}, //opens a chat, chat_type can be user/group/bot, chat_id is an id of user/group/bot
 ]
 
 const router = VueRouter.createRouter({
-    history: VueRouter.createWebHistory('/'),
+    history: VueRouter.createWebHistory(),
     routes
 })
 

@@ -234,6 +234,8 @@ export default {
     },
     props: [ 'chat_id', 'chat_type', 'jwtToken' ],
     mounted() {
+
+
         if(this.chat_type == 'user') {
             this.info_header = "User";
 
