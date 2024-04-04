@@ -43,11 +43,11 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center" v-else-if="friendlist_type === 'pending'">
-                        <div class="p-1"><button type="button" title="Accept friend request" class="btn btn-outline-success rounded-pill"><i class="fa-solid fa-check"></i></button></div>
-                        <div class="p-1"><button type="button" title="Reject friend request" class="btn btn-outline-danger rounded-pill"><i class="fa-solid fa-xmark"></i></button></div>
+                        <div class="p-1"><button @click="acceptFriendRequest(friend)" type="button" title="Accept friend request" class="btn btn-outline-success rounded-pill"><i class="fa-solid fa-check"></i></button></div>
+                        <div class="p-1"><button @click="rejectFriendRequest(friend)" type="button" title="Reject friend request" class="btn btn-outline-danger rounded-pill"><i class="fa-solid fa-xmark"></i></button></div>
                     </div>
                     <div class="d-flex justify-content-center" v-else-if="friendlist_type === 'blocked'">
-                        <div class="p-1"><button type="button" title="Accept friend request" class="btn btn-outline-success rounded-pill">Unblock</button></div>
+                        <div class="p-1"><button @click="unblockFriend(friend)" type="button" title="Unblock" class="btn btn-outline-success rounded-pill">Unblock</button></div>
                     </div>
 
                 </div>
@@ -115,8 +115,19 @@ export default {
         unblockFriend(friend){
             axios.post('/api/friend/unblock', {"second_user_id": friend.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
                 friend.is_blocked = false;
+                this.friend_list = this.friend_list.filter(f => f.id !== friend.id);
             }).catch();
         },
+        acceptFriendRequest(friend){
+            axios.post('/api/friend/acceptFriendRequest', {"second_user_id": friend.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                this.friend_list = this.friend_list.filter(f => f.id !== friend.id);
+            }).catch();
+        },
+        rejectFriendRequest(friend){
+            axios.post('/api/friend/rejectFriendRequest', {"second_user_id": friend.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
+                this.friend_list = this.friend_list.filter(f => f.id !== friend.id);
+            }).catch();
+        }
     }
 
 }

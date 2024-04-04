@@ -73,7 +73,8 @@ Route::group([
     Route::post('declineRequest', 'FriendListController@decline_request'); //Decline request to me (first user)
     Route::delete('removeRequest', 'FriendListController@remove_request'); // Remove request I sent to user (second user)
     Route::delete('removeFriend', 'FriendListController@remove_friend'); //Remove user from friends list (works for both)
-    Route::post('acceptFriendRequest', 'FriendListController@accept_friend_request'); //Remove user from friends list (works for both)
+    Route::post('acceptFriendRequest', 'FriendListController@accept_friend_request'); //Accept Friend request
+    Route::post('rejectFriendRequest', 'FriendListController@reject_friend_request'); //Reject Friend request
 
     Route::get('getFriendList', 'GetFriendListController');
     Route::get('getPendingFriendList', 'GetFriendListController@get_pending_friends');

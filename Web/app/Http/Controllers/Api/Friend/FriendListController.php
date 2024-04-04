@@ -119,4 +119,23 @@ class FriendListController extends Controller
         }
     }
 
+    public function reject_friend_request(FriendListRequest $request)
+    {
+        if($request->validated()){
+
+            $first_user_id = auth()->user()->id;
+            $second_user_id = $request['second_user_id'];
+
+            $relation = Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'requested')->first();
+
+            if($relation){
+                $relation->delete();
+                return response()->json(['message' => 'Success']);
+            }
+            else{
+                return response()->json(['message' => 'No such friend request']);
+            }
+
+        }
+    }
 }
