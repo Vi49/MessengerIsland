@@ -102,12 +102,17 @@
                                 <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
                             </div>
                             <div class="col-md-10">
-                                <input type="text" class="form-control rounded-pill w-100">
+                                <input type="text" class="form-control rounded-pill w-100" v-model="message_text">
                             </div>
                             <div class="col-md-1">
                                 <div class="row">
                                     <div class="col-4">
-                                        <button type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
+                                        <div>
+                                            <button @click="toggleEmojiShow" type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
+                                        </div>
+                                        <div id="emojiContainer" v-show="emoji_show">
+                                            <EmojiPicker :native="true" @select="onSelectEmoji" />
+                                        </div>
                                     </div>
                                     <div class="col-7">
                                         <button type="button" class="btn btn-primary rounded-pill ">Send</button>
@@ -225,11 +230,17 @@
 </template>
 
 <script>
+import EmojiPicker from 'vue3-emoji-picker'
+import 'vue3-emoji-picker/css'
+
+
 export default {
     data(){
         return {
             chat_information: {},
-            info_header: ''
+            info_header: '',
+            emoji_show: false,
+            message_text: ''
         };
     },
     props: [ 'chat_id', 'chat_type', 'jwtToken' ],
@@ -318,7 +329,16 @@ export default {
             axios.post('/api/friend/acceptFriendRequest', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
                 this.chat_information['friend_status'] = 'friends';
             }).catch();
+        },
+        toggleEmojiShow(){
+            this.emoji_show = !this.emoji_show;
+        },
+        onSelectEmoji(emoji) {
+            this.message_text += emoji.i;
         }
+    },
+    components: {
+        EmojiPicker
     }
 }
 </script>
@@ -448,6 +468,13 @@ div .chatting-area{
     width: 70px; /* Adjust the width as needed */
     height: 70px; /* Adjust the height as needed */
     border-radius: 50%;
+}
+
+#emojiContainer {
+    position: absolute;
+    bottom: 50px;
+    left: 87%;
+    transform: translateX(-50%);
 }
 
 </style>
