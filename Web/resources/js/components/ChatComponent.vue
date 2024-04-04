@@ -99,10 +99,10 @@
                     <div class="form-group mt-3 mb-0" v-else>
                         <div class="row" v-if="chat_information['friend_status']=='friends'">
                             <div class="col-md-1">
-                                <button type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
+                                <button data-bs-toggle="modal" data-bs-target="#sendFileModal"  type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
                             </div>
                             <div class="col-md-10">
-                                <input type="text" class="form-control rounded-pill w-100" v-model="message_text">
+                                <input maxlength="500" type="text" class="form-control rounded-pill w-100" v-model="message_text">
                             </div>
                             <div class="col-md-1">
                                 <div class="row">
@@ -223,6 +223,29 @@
                     </form>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal send file -->
+    <div class="modal fade" id="sendFileModal" tabindex="-1" aria-labelledby="sendFileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="sendFileModalLabel">Send File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <input class="form-control" type="file" id="formFile">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Send</button>
+                </div>
             </div>
         </div>
     </div>
