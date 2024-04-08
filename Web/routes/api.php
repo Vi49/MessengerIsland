@@ -93,9 +93,9 @@ Route::group([
     //Sending messages (text, file, photo)
     Route::group(['prefix' => 'send'], function (){
         //TODO: sending photos
-        //TODO: sending files
 
         Route::post('sendTextMessage','SendMessageController@send_text_message'); //default: input plain, output in db encrypted with Crypt::encryptString, private: input encrypted, output in db encrypted, the keys are stored only at client-side
+        Route::post('sendFileMessage','SendMessageController@send_file_message');
     });
 });
 
