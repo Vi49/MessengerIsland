@@ -78,7 +78,7 @@
                             <div class="text-end">
                                     <span class="message-time">
                                             Sun
-                                        </span>
+                                    </span>
                             </div>
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                             </div>
                             <div class="col-md-1">
                                 <div class="row">
-                                    <div class="col-4">
+                             11       <div class="col-4">
                                         <div>
                                             <button @click="toggleEmojiShow" type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
                                         </div>

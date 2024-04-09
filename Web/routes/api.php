@@ -85,10 +85,17 @@ Route::group([
 
 //Messages
 Route::group([
-    'middleware' => 'jwt.auth',
+    'middleware' => 'auth:api',
     'namespace'=> 'Api\Messages',
     'prefix' => 'message'
 ], function ($router) {
+
+    //Get messages
+    Route::group(['prefix'=>'get'], function (){
+
+        Route::get('all', 'GetMessagesController@get_all_messages'); //Get all messages of chat
+    });
+
 
     //Sending messages (text, file, photo)
     Route::group(['prefix' => 'send'], function (){
