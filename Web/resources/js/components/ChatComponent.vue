@@ -115,7 +115,7 @@
                                         </div>
                                     </div>
                                     <div class="col-7">
-                                        <button type="button" class="btn btn-primary rounded-pill ">Send</button>
+                                        <button @click="sendTextMessage" type="button" class="btn btn-primary rounded-pill ">Send</button>
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +229,7 @@
 
 
     <!-- Modal send file -->
-    <div class="modal fade" id="sendFileModal" tabindex="-1" aria-labelledby="sendFileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="sendFileModal" tabindex="-1" aria-labelledby="sendFileModalLabel" aria-hidden="true" v-show="modal_file_show">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -239,12 +239,12 @@
                 <div class="modal-body">
                     <form method="POST">
                         <div class="mb-3">
-                            <input class="form-control" type="file" id="formFile">
+                            <input class="form-control" type="file" id="formFile" @change="handleFileChange">
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Send</button>
+                    <button @click="sendFileMessage" type="button" class="btn btn-primary"><i v-show="modal_file_show_send_load" class="fa-solid fa-spinner"></i>Send</button>
                 </div>
             </div>
         </div>
@@ -263,7 +263,10 @@ export default {
             chat_information: {},
             info_header: '',
             emoji_show: false,
-            message_text: ''
+            message_text: '',
+            message_file: null,
+            modal_file_show_send_load: false,
+            modal_file_show: false,
         };
     },
     props: [ 'chat_id', 'chat_type', 'jwtToken' ],
@@ -301,6 +304,44 @@ export default {
         }
     },
     methods: {
+        handleFileChange(event) {
+            this.file = event.target.files[0];
+        },
+        async sendFileMessage(){
+            if (!this.file) {
+                alert('You must select the file!');
+                return;
+            }
+
+            console.log('Uploading file...');
+            this.modal_file_show_send_load = true;
+
+            const formData = new FormData();
+            formData.append('file', this.file);
+            formData.append('second_user_id', this.chat_information.id);
+
+            await axios.post('/api/message/send/sendFileMessage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${this.jwtToken}`
+                }
+            }).then(() => {
+                this.modal_file_show_send_load = false;
+
+                //Close bootstrap modal
+                this.modal_file_show = false;
+            }).catch(error => {
+                console.log('Error uploading file' + error);
+            });
+        },
+        sendTextMessage(){
+            let encryption = 'default'; //todo: add encryption and change this var name
+
+            axios.post('/api/message/send/sendTextMessage', {"second_user_id": this.chat_information.id, 'content': this.message_text, 'encryption': encryption}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(()=>{
+                this.message_text = '';
+            }).catch();
+        },
+
         unblockCurrentChat(){
             if(this.chat_type == 'user') {
                 axios.post('/api/friend/unblock', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(() => {
