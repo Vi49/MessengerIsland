@@ -7,6 +7,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Services\Messages\Service;
+
 
 class GetFriendListResource extends JsonResource
 {
@@ -31,6 +33,7 @@ class GetFriendListResource extends JsonResource
             'last_seen' => $friendUser->last_seen,
             'last_seen_human_ago' => Carbon::parse($friendUser->last_seen)->diffForHumans(),
             'is_blocked' => Status::isBlocking(auth()->user()->id, $id),
+            'last_message' => Service::get_last_message_in_chat(auth()->user()->id, $id),
         ];
     }
 }

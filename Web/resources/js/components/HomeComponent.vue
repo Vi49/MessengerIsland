@@ -143,10 +143,10 @@
                                 <div class="col-md-9" style="padding-left: 0px; margin-left: 0">
                                     <div class="d-flex w-100 align-items-center justify-content-between">
                                         <strong class="mb-1">{{ friend.first_name }} {{ friend.last_name }}</strong>
-                                        <small>Sun</small>
+                                        <small>{{ (getFriendLastMessage(friend)) ? friend.time_last_message : '' }}</small>
                                     </div>
                                     <!-- TODO: add last message here -->
-                                    <div class="col-10 mb-1 small">Here must be last message </div>
+                                    <div class="col-10 mb-1 small">{{ (getFriendLastMessage(friend)) ? friend.result_last_message : 'Start your conversation' }} </div>
                                 </div></div>
                         </a>
                     </div>
@@ -210,6 +210,17 @@ export  default {
         }
     },
     methods: {
+        getFriendLastMessage(friend){
+            if(friend.last_message){
+                friend['result_last_message'] = (friend.last_message.content) ?? friend.last_message.origin_filename;
+                friend['time_last_message'] = friend.last_message.human_time;
+                return true;
+            }
+            else{
+                return false;
+            }
+        },
+
         setWindowTitle(){
             let title = 'Messenger Island';
 

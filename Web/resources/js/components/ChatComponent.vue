@@ -254,10 +254,10 @@ export default {
             message_file: null,
             modal_file_show_send_load: false,
             modal_file_show: false,
-            chat_messages: []
+            chat_messages: [],
         };
     },
-    props: [ 'chat_id', 'chat_type', 'jwtToken' ],
+    props: [ 'chat_id', 'chat_type', 'jwtToken', 'friend_list' ],
     mounted() {
         //Load chat data
         if(this.chat_type == 'user') {
@@ -313,7 +313,6 @@ export default {
         getChatMessages(){
             axios.get(`/api/message/get/all?second_user_id=${this.chat_information.id}`, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(res=>{
                 this.chat_messages = res.data;
-                console.log(this.chat_messages);
             }).catch();
         },
 
@@ -326,7 +325,6 @@ export default {
                 return;
             }
 
-            console.log('Uploading file...');
             this.modal_file_show_send_load = true;
 
             const formData = new FormData();
@@ -353,6 +351,7 @@ export default {
             axios.post('/api/message/send/sendTextMessage', {"second_user_id": this.chat_information.id, 'content': this.message_text, 'encryption': encryption}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(()=>{
                 this.message_text = '';
             }).catch();
+
         },
 
         unblockCurrentChat(){

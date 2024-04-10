@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Http\Services\Utils;
 
 use App\Http\Services\Friends\Status;
+use App\Http\Services\Messages\Service;
 
 class GetMessagesController extends Controller
 {
@@ -32,7 +33,7 @@ class GetMessagesController extends Controller
                 })
                     ->orWhere(function($query) use ($first_user_id, $second_user_id) {
                         $query->where('first_user_id', $second_user_id)
-                            ->where('second_user_id', $first_user_id);
+                            ->where('second_user_id', $first_user_id)->where('blocked', false);
                     })
                     ->where('blocked', false)
                     ->orderBy('id')
@@ -45,9 +46,8 @@ class GetMessagesController extends Controller
                 })
                     ->orWhere(function($query) use ($first_user_id, $second_user_id) {
                         $query->where('first_user_id', $second_user_id)
-                            ->where('second_user_id', $first_user_id);
+                            ->where('second_user_id', $first_user_id)->where('blocked', false);
                     })
-                    ->where('blocked', false)
                     ->orderBy('id')
                     ->get();
             }

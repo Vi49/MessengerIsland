@@ -18,5 +18,19 @@ class Utils
 
         return substr(sha1($first_user_email.$second_user_email), 0, 15);
     }
+
+    //Get filenames from special formatted string
+    public static function get_origin_and_server_filename($formatted_string, &$origin_filename, &$server_filename) : bool
+    {
+        $filenames = explode('|', $formatted_string, 2);
+        if(!$filenames){
+            return false;
+        }
+
+        $origin_filename = base64_decode($filenames[0]);
+        $server_filename = $filenames[1];
+
+        return true;
+    }
 }
 
