@@ -5,6 +5,7 @@ namespace App\Http\Resources\Api\Messages;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Crypt;
 
 class GetAllMessagesResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class GetAllMessagesResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "content" => $this->content,
+            "content" => ($this->type == 'text') ? Crypt::decryptString($this->content) : $this->content,
             "type" => $this->type,
             "encryption" => $this->encryption,
             "first_user_id" => $this->first_user_id,

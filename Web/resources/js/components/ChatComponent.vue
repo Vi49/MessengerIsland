@@ -51,34 +51,21 @@
 
         <!-- Chat messages -->
         <div class="container-fluid mt-3" style="display: flex; flex-direction: column; height: 90vh;">
-            <div class="align-top" style="overflow-y: scroll; overflow-x: hidden; padding-left: 20px; width: 100%; height: 105vh">
+            <div class="align-top" id="scrollableChat" ref="scrollableChat">
 
-                <div class="row message-body">
-                    <div class="col-sm-12 message-main-receiver">
-                        <div class="receiver">
-                            <div class="message-text">
-                                Hello kompaniya ZAO (((BURTAU))) budiet unechtozhena cherez 24 chasa.
-                            </div>
-                            <div class="text-end">
+
+                <div v-for="chat_message in chat_messages">
+                    <div class="row message-body">
+                        <div :class="'col-sm-12 message-main-' + ((chat_message.second_user_id == chat_information.id) ? 'sender' : 'receiver')">
+                            <div :class="(chat_message.second_user_id == chat_information.id) ? 'sender' : 'receiver'">
+                                <div class="message-text">
+                                    {{ (chat_message.content) }}
+                                </div>
+                                <div class="text-end">
                                     <span class="message-time ">
-                                        Sun
+                                        {{ chat_message.created_at_human }}
                                     </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row message-body">
-                    <div class="col-sm-12 message-main-sender">
-                        <div class="sender">
-                            <div class="message-text">
-                                Идите ка вы к ЧЁР.ТОВОЙ БАБУШКИ УРОТ
-                            </div>
-                            <div class="text-end">
-                                    <span class="message-time">
-                                            Sun
-                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,11 +89,11 @@
                                 <button data-bs-toggle="modal" data-bs-target="#sendFileModal"  type="button" class="btn btn-success rounded-pill w-100"><i class="fa-solid fa-paperclip"></i></button>
                             </div>
                             <div class="col-md-10">
-                                <input maxlength="500" type="text" class="form-control rounded-pill w-100" v-model="message_text">
+                                <input maxlength="400" type="text" class="form-control rounded-pill w-100" v-model="message_text">
                             </div>
                             <div class="col-md-1">
                                 <div class="row">
-                             11       <div class="col-4">
+                                    <div class="col-4">
                                         <div>
                                             <button @click="toggleEmojiShow" type="button" id="emojiButton" class="btn btn-secondary rounded-pill"><i class="fa-regular fa-face-smile"></i></button>
                                         </div>
@@ -267,12 +254,12 @@ export default {
             message_file: null,
             modal_file_show_send_load: false,
             modal_file_show: false,
+            chat_messages: []
         };
     },
     props: [ 'chat_id', 'chat_type', 'jwtToken' ],
     mounted() {
-
-
+        //Load chat data
         if(this.chat_type == 'user') {
             this.info_header = "User";
 
@@ -283,10 +270,19 @@ export default {
                 axios.post('/api/friend/getStatus', {"second_user_id": this.chat_information.id}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(data => {
                     this.chat_information['friend_status'] = data.data.status;
                     this.chat_information['is_blocking'] = data.data.is_blocking;
+
+                    this.getChatMessages();
                 }).catch();
 
             }).catch();
         }
+
+        //Scroll chat to the bottom
+        this.scrollToBottom();
+    },
+    updated() {
+        // Scroll chat to the bottom when the component is updated
+        this.scrollToBottom();
     },
     computed:{
         getFriendStatus(){
@@ -304,6 +300,23 @@ export default {
         }
     },
     methods: {
+        scrollToBottom() {
+            // Wait for next tick to ensure the DOM has been updated
+            this.$nextTick(() => {
+                // Scroll to the bottom of the chat
+                let scrollableChatDiv = this.$refs.scrollableChat;
+                scrollableChatDiv.scrollTop = scrollableChatDiv.scrollHeight;
+            });
+        },
+
+
+        getChatMessages(){
+            axios.get(`/api/message/get/all?second_user_id=${this.chat_information.id}`, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(res=>{
+                this.chat_messages = res.data;
+                console.log(this.chat_messages);
+            }).catch();
+        },
+
         handleFileChange(event) {
             this.file = event.target.files[0];
         },
@@ -539,6 +552,14 @@ div .chatting-area{
     bottom: 50px;
     left: 87%;
     transform: translateX(-50%);
+}
+
+#scrollableChat {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-left: 20px;
+    width: 100%;
+    height: 105vh;
 }
 
 </style>

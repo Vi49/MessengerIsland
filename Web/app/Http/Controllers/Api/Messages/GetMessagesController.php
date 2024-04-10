@@ -35,6 +35,7 @@ class GetMessagesController extends Controller
                             ->where('second_user_id', $first_user_id);
                     })
                     ->where('blocked', false)
+                    ->orderBy('id')
                     ->paginate(10, ['*'], 'page', $request['page']);
             }
             else{
@@ -46,7 +47,9 @@ class GetMessagesController extends Controller
                         $query->where('first_user_id', $second_user_id)
                             ->where('second_user_id', $first_user_id);
                     })
-                    ->where('blocked', false)->get();
+                    ->where('blocked', false)
+                    ->orderBy('id')
+                    ->get();
             }
 
             return GetAllMessagesResource::collection($messages)->resolve();
