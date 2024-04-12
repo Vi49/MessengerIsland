@@ -370,6 +370,7 @@ export default {
 
             this.modal_file_show_send_load = true;
 
+
             const formData = new FormData();
             formData.append('file', this.file);
             formData.append('second_user_id', this.chat_information.id);
@@ -383,6 +384,7 @@ export default {
                 this.modal_file_show_send_load = false;
 
                 //Close bootstrap modal
+                $('#sendFileModal').modal('hide');
                 this.modal_file_show = false;
             }).catch(error => {
                 console.log('Error uploading file' + error);
