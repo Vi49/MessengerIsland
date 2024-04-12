@@ -300,6 +300,8 @@ export default {
         }
     },
     methods: {
+
+
         scrollToBottom() {
             // Wait for next tick to ensure the DOM has been updated
             this.$nextTick(() => {

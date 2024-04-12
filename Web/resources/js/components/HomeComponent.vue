@@ -146,7 +146,7 @@
                                         <small>{{ (getFriendLastMessage(friend)) ? friend.time_last_message : '' }}</small>
                                     </div>
                                     <!-- TODO: add last message here -->
-                                    <div class="col-10 mb-1 small">{{ (getFriendLastMessage(friend)) ? friend.result_last_message : 'Start your conversation' }} </div>
+                                    <div class="col-10 mb-1 small">{{ (getFriendLastMessage(friend)) ? cutMessage(friend.result_last_message, 20) : 'Start your conversation' }} </div>
                                 </div></div>
                         </a>
                     </div>
@@ -210,6 +210,15 @@ export  default {
         }
     },
     methods: {
+        cutMessage(message, countOfSymbols){
+            if(message.length-2 > countOfSymbols) {
+                message = message.slice(0, countOfSymbols - 1);
+                message += "...";
+            }
+
+            return message;
+        },
+
         getFriendLastMessage(friend){
             if(friend.last_message){
                 friend['result_last_message'] = (friend.last_message.content) ?? friend.last_message.origin_filename;
