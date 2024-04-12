@@ -58,8 +58,9 @@
                     <div class="row message-body">
                         <div :class="'col-sm-12 message-main-' + ((chat_message.second_user_id == chat_information.id) ? 'sender' : 'receiver')">
                             <div :class="(chat_message.second_user_id == chat_information.id) ? 'sender' : 'receiver'">
-                                <div class="message-text">
-                                    {{ (chat_message.content) }}
+                                <div class="message-text" :style="(chat_message.type == 'file') ? 'cursor: pointer' : ''" @click="actionWithMessage(chat_message)">
+                                    <i class='fa-solid fa-file' v-show="chat_message.type == 'file'"></i>
+                                    {{ (chat_message.type == 'file') ? decodeB64Text(chat_message.content.split('|')[0]) : chat_message.content }}
                                 </div>
                                 <div class="text-end">
                                     <span class="message-time ">
@@ -301,6 +302,46 @@ export default {
     },
     methods: {
 
+        downloadFile(server_filename, origin_filename) {
+            axios.get('/api/message/get/file', {
+                responseType: 'blob',
+                params: {
+                    server_filename: server_filename,
+                    origin_filename: origin_filename
+                },
+                headers: {Authorization: `Bearer ${this.jwtToken}`}
+            })
+                .then(response => {
+                    // Create a Blob object from the response data
+                    const blob = new Blob([response.data], { type: response.headers['content-type'] });
+
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+
+                    link.download = atob(origin_filename); // Specify the desired file name here
+
+                    // Append the link to the body and click it to trigger the download
+                    document.body.appendChild(link);
+                    link.click();
+
+                    // Remove the link from the body
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        },
+
+        actionWithMessage(chat_message){
+            if(chat_message.type == 'file')
+            {
+                this.downloadFile(chat_message.content.split('|')[1], chat_message.content.split('|')[0]);
+            }
+        },
+
+        decodeB64Text(b64String){
+            return atob(b64String);
+        },
 
         scrollToBottom() {
             // Wait for next tick to ensure the DOM has been updated

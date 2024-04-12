@@ -94,6 +94,8 @@ Route::group([
     Route::group(['prefix'=>'get'], function (){
 
         Route::get('all', 'GetMessagesController@get_all_messages'); //Get all messages of chat
+
+        Route::get('file', 'GetMessagesController@get_file_message'); //Get file message (origin and server filenames are both base64 encoded)
     });
 
 

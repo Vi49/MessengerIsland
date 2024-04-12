@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Messages;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Messages\GetAllMessagesRequest;
+use App\Http\Requests\Api\Messages\GetFileMessageRequest;
 use App\Http\Resources\Api\Messages\GetAllMessagesResource;
 use App\Models\Messages;
 use Hamcrest\Util;
@@ -56,6 +57,21 @@ class GetMessagesController extends Controller
         }
         else{
             return response()->json(['error' => 'Error validating'], 400);
+        }
+    }
+
+    public function get_file_message(GetFileMessageRequest $request)
+    {
+        $server_filename = base64_decode($request['server_filename']);
+        $origin_filename = base64_decode($request['origin_filename']);
+
+        $filePath = storage_path('app/messages/'.$server_filename);
+
+        // Check if the file exists
+        if (file_exists($filePath)) {
+            return response()->download($filePath, $origin_filename);
+        } else {
+            abort(404);
         }
     }
 }

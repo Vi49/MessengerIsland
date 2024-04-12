@@ -9,6 +9,7 @@ use App\Models\Messages;
 use Hamcrest\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Services\Utils;
 
@@ -61,14 +62,16 @@ class SendMessageController extends Controller
 
                 $file = $request->file('file');
 
-                $directory = public_path('/messages/'.Utils::get_chat_messages_folder($first_user_id, $second_user_id));
+                $directory = 'messages/'.Utils::get_chat_messages_folder($first_user_id, $second_user_id);
+                Storage::makeDirectory($directory);
+
                 $fileName = md5((string)time().$file->getClientOriginalName());
                 $file->storeAs($directory, $fileName);
 
                 $isBlocking = Status::isBlocking($first_user_id, $second_user_id);
 
                 Messages::create([
-                    'content' => base64_encode($file->getClientOriginalName()).'|'.$fileName,
+                    'content' => base64_encode($file->getClientOriginalName()).'|'.base64_encode(Utils::get_chat_messages_folder($first_user_id, $second_user_id).'/'.$fileName),
                     'type' => 'file',
                     'encryption' => 'none',
                     'blocked' => $isBlocking,
