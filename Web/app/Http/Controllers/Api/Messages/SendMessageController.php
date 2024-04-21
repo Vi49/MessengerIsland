@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Messages;
 
+use App\Events\StoreMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Messages\SendFileMessageRequest;
 use App\Http\Requests\Api\Messages\SendTextMessageRequest;
@@ -31,7 +32,7 @@ class SendMessageController extends Controller
 
                     $isBlocking = Status::isBlocking($first_user_id, $second_user_id);
 
-                    Messages::create([
+                    $message = Messages::create([
                         'content' => $encryptedMessage,
                         'type' => 'text',
                         'encryption' => 'default',
@@ -39,6 +40,8 @@ class SendMessageController extends Controller
                         'first_user_id' => $first_user_id,
                         'second_user_id' => $second_user_id,
                     ]);
+
+                    broadcast(new StoreMessageEvent($message, $second_user_id))->toOthers();
 
                 }
             }
@@ -70,14 +73,19 @@ class SendMessageController extends Controller
 
                 $isBlocking = Status::isBlocking($first_user_id, $second_user_id);
 
-                Messages::create([
-                    'content' => base64_encode($file->getClientOriginalName()).'|'.base64_encode(Utils::get_chat_messages_folder($first_user_id, $second_user_id).'/'.$fileName),
+                $content = base64_encode($file->getClientOriginalName()).'|'.base64_encode(Utils::get_chat_messages_folder($first_user_id, $second_user_id).'/'.$fileName);
+                $message = Messages::create([
+                    'content' => $content,
                     'type' => 'file',
                     'encryption' => 'none',
                     'blocked' => $isBlocking,
                     'first_user_id' => $first_user_id,
                     'second_user_id' => $second_user_id,
                 ]);
+
+                broadcast(new StoreMessageEvent($message, $second_user_id))->toOthers();
+
+                return response()->json(['content' => $content]);
             }
             else{
                 return response()->json(['error' => 'You are not a friend'], 400);

@@ -165,7 +165,7 @@
 
             <!-- Chat -->
             <div class="col-md-10" style="padding-left: 0; padding-right: 0" v-else>
-                <chat :chat_id="chat_id" :chat_type="chat_type" :jwtToken="jwtToken"></chat>
+                <chat :userMeData="userMeData" :chat_id="chat_id" :chat_type="chat_type" :jwtToken="jwtToken"></chat>
             </div>
         </div>
     </div>

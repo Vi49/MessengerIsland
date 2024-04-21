@@ -258,8 +258,10 @@ export default {
             chat_messages: [],
         };
     },
-    props: [ 'chat_id', 'chat_type', 'jwtToken', 'friend_list' ],
+    props: [ 'chat_id', 'chat_type', 'jwtToken', 'friend_list', 'userMeData'],
+
     mounted() {
+
         //Load chat data
         if(this.chat_type == 'user') {
             this.info_header = "User";
@@ -273,6 +275,10 @@ export default {
                     this.chat_information['is_blocking'] = data.data.is_blocking;
 
                     this.getChatMessages();
+
+                    console.log(window.Echo.private(`store_message_${this.userMeData.id}`).listen('.store_message', res => {
+                        console.log(res);
+                    }));
                 }).catch();
 
             }).catch();
@@ -280,6 +286,8 @@ export default {
 
         //Scroll chat to the bottom
         this.scrollToBottom();
+
+
     },
     updated() {
         // Scroll chat to the bottom when the component is updated
@@ -380,12 +388,15 @@ export default {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${this.jwtToken}`
                 }
-            }).then(() => {
+            }).then(res => {
                 this.modal_file_show_send_load = false;
 
                 //Close bootstrap modal
                 $('#sendFileModal').modal('hide');
                 this.modal_file_show = false;
+
+                let message_item = {'content': res.data.content, 'created_at': new Date(), 'created_at_human': "now", 'encryption': "none", 'second_user_id': this.chat_information.id, 'type': 'file'};
+                this.chat_messages.push(message_item);
             }).catch(error => {
                 console.log('Error uploading file' + error);
             });
@@ -394,6 +405,9 @@ export default {
             let encryption = 'default'; //todo: add encryption and change this var name
 
             axios.post('/api/message/send/sendTextMessage', {"second_user_id": this.chat_information.id, 'content': this.message_text, 'encryption': encryption}, {headers: {Authorization: `Bearer ${this.jwtToken}`}}).then(()=>{
+                let message_item = {'content': this.message_text, 'created_at': new Date(), 'created_at_human': "now", 'encryption': "none", 'second_user_id': this.chat_information.id, 'type': 'text'};
+                this.chat_messages.push(message_item);
+
                 this.message_text = '';
             }).catch();
 
