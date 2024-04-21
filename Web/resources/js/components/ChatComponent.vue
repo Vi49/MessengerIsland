@@ -276,9 +276,12 @@ export default {
 
                     this.getChatMessages();
 
-                    console.log(window.Echo.private(`store_message_${this.userMeData.id}`).listen('.store_message', res => {
-                        console.log(res);
-                    }));
+                    window.Echo.private(`store_message_${this.userMeData.id}`).listen('.store_message', res => {
+                        let message_item = {'content': res.message.content, 'created_at': new Date(), 'created_at_human': "now", 'encryption': res.message.encryption, 'second_user_id': res.message.second_user_id, 'first_user_id': res.message.first_user_id, 'type': res.message.type};
+                        this.chat_messages.push(message_item);
+
+
+                    });
                 }).catch();
 
             }).catch();

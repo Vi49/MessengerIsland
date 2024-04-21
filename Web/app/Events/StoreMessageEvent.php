@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Http\Resources\Api\Messages\StoreMessageResource;
 use App\Models\Messages;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -47,7 +48,7 @@ class StoreMessageEvent implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'message' => $this->message->content,
+            'message' => new StoreMessageResource($this->message),
         ];
     }
 }
