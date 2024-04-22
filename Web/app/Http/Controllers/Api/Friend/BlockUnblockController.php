@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BlockRelationships;
 use App\Models\Relationships;
 use App\Http\Requests\Api\Friend\BlockUnblockRequest;
+use Illuminate\Support\Facades\Cache;
 
 class BlockUnblockController extends Controller
 {
@@ -21,6 +22,8 @@ class BlockUnblockController extends Controller
                 'second_user_id' => $second_user_id
             ]);
 
+            Cache::forget('friendlist_'.auth()->user()->id);
+
             return response()->json(['message' => 'Blocked']);
         }
     }
@@ -35,6 +38,8 @@ class BlockUnblockController extends Controller
             $relationship = BlockRelationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->first();
             if($relationship) {
                 $relationship->delete();
+
+                Cache::forget('friendlist_'.auth()->user()->id);
 
                 return response()->json(['message' => 'Unblocked']);
             }else{

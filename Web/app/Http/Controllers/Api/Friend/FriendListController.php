@@ -22,6 +22,8 @@ class FriendListController extends Controller
                 "status" => "requested"
             ]);
 
+            Cache::forget('friendlist_'.auth()->user()->id);
+
             return response()->json(['message' => 'Success']);
         }
     }
@@ -36,6 +38,8 @@ class FriendListController extends Controller
             $relationship = Relationships::where('first_user_id', $first_user_id)->where('second_user_id', $second_user_id)->where('status', 'requested')->first();
             if($relationship) {
                 $relationship->delete();
+
+                Cache::forget('friendlist_'.auth()->user()->id);
 
                 return response()->json(['message' => 'Success']);
             }
@@ -55,6 +59,8 @@ class FriendListController extends Controller
             $relationship = Relationships::where('first_user_id', $second_user_id)->where('second_user_id', $first_user_id)->where('status', 'requested')->first();
             if($relationship) {
                 $relationship->delete();
+
+                Cache::forget('friendlist_'.auth()->user()->id);
 
                 return response()->json(['message' => 'Success']);
             }
@@ -77,6 +83,8 @@ class FriendListController extends Controller
             if($firstRelationship && $secondRelationship) {
                 $firstRelationship->delete();
                 $secondRelationship->delete();
+
+                Cache::forget('friendlist_'.auth()->user()->id);
 
                 return response()->json(['message' => 'Success']);
             }
@@ -110,6 +118,8 @@ class FriendListController extends Controller
                     'status' => 'friend'
                 ]);
 
+                Cache::forget('friendlist_'.auth()->user()->id);
+
                 return response()->json(['message' => 'Success']);
             }
             else{
@@ -130,6 +140,9 @@ class FriendListController extends Controller
 
             if($relation){
                 $relation->delete();
+
+                Cache::forget('friendlist_'.auth()->user()->id);
+
                 return response()->json(['message' => 'Success']);
             }
             else{

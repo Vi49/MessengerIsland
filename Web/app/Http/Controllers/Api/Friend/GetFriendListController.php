@@ -9,6 +9,7 @@ use App\Http\Resources\Api\Friend\GetPendingFriendListResource;
 use App\Http\Services\Friends\Status;
 use App\Models\Relationships;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class GetFriendListController extends Controller
 {
@@ -18,7 +19,13 @@ class GetFriendListController extends Controller
 
         $friends = User::find($first_user_id)->friends;
 
-        return GetFriendListResource::collection($friends);
+        if (Cache::has('friendlist_'.auth()->user()->id)) {
+            return Cache::get('friendlist_'.auth()->user()->id);
+        }
+        else{
+            Cache::put('friendlist_'.auth()->user()->id, GetFriendListResource::collection($friends));
+            return GetFriendListResource::collection($friends);
+        }
     }
 
     public function get_pending_friends()
