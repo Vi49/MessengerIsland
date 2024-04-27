@@ -15,7 +15,7 @@ class EditAvatarController extends Controller
            $user = auth()->user();
 
            //delete old photo
-           if (file_exists(public_path('avatars') . '/' . $user->avatar)) {
+           if (file_exists(public_path('avatars') . '/' . $user->avatar) && !empty($user->avatar)) {
                unlink(public_path('avatars') . '/' . $user->avatar);
            }
 
