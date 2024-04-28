@@ -20,6 +20,11 @@ In a world where privacy is increasingly important, Messenger Island stands out 
 - **Safety:** Self-destructing messages prevent sensitive information from lingering longer than necessary.
 - **Open-Source:** Our codebase is open for scrutiny, fostering trust and community involvement.
 
+## Examples 🖼
+![alt text](https://github.com/Vi49/MessengerIsland/blob/main/exmpl1.png?raw=true)
+![alt text](https://github.com/Vi49/MessengerIsland/blob/main/exmpl2.png?raw=true)
+![alt text](https://github.com/Vi49/MessengerIsland/blob/main/exmpl3.png?raw=true)
+
 ## Get Started 🛠️
 
 To get started with Messenger Island, follow these steps:
