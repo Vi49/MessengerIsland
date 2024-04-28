@@ -8,7 +8,7 @@ Messenger Island is an open-source project aimed at providing a secure, private,
 - Self-destructing messages for added privacy
 - Two-factor authentication for enhanced security
 - Open-source codebase for transparency and community collaboration
-- Real-time messaging powered by Laravel and Vue.js
+- Real-time messaging powered by Laravel (websockets and caching included) and Vue.js
 - Android application built with Kotlin for seamless mobile experience
 
 ## Why Messenger Island? 🤔
